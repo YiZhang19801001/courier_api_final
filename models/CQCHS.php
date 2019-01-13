@@ -60,4 +60,54 @@ class CQCHS extends Courier
         }
 
     }
+
+    private function createStockString($data)
+    {
+        $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/au/recordservice?wsdl";
+        try {
+            $client = new SoapClient($wsdl, array('trace' => 1));
+        } catch (\Throwable $th) {
+            echo 'not good';
+        }
+        $receiverAddress = $data->strReceiverProvince . $data->strReceiverProvince . $data->strReceiverDistrict . $data->strReceiverDoorNo;
+        $stock = "<ydjbxx>";
+        $stock .= "<chrusername>0104</chrusername>";
+        $stock .= "<chrstockcode>au</chrstockcode>";
+        $stock .= "<chrpassword>123456</chrpassword>";
+// $stock.="<chryyrmc>2082</chryyrmc>";
+        // $stock.="<chrzydhm>160-91239396</chrzydhm>";
+        // $stock.="<chrhbh>CX110/CX052</chrhbh>";
+        // $stock.="<chrjckrq>2015-06-25</chrjckrq>";
+        $stock .= "<chrzl>$data->strOrderWeight</chrzl>";
+        $stock .= "<chrsjr>$data->strReceiverName</chrsjr>";
+        $stock .= "<chrsjrdz>$receiverAddress</chrsjrdz>";
+        $stock .= "<chrsjrdh>$data->strReceiverMobile</chrsjrdh>";
+        $stock .= "<chrjjr>$data->strSenderName</chrjjr>";
+        $stock .= "<chrjjrdh>$data->strSenderMobile</chrjjrdh>";
+        $stock .= "<chrsfzhm>352227198407180525</chrsfzhm>";
+        $stock .= "<ydhwxxlist>";
+        $stock .= "<ydhwxx>";
+        $stock .= $this->getItemList($data);
+        $stock .= "</ydhwxx>";
+        $stock .= "</ydhwxxlist>";
+        $stock .= "</ydjbxx>";
+
+        return $stock;
+
+    }
+
+    private function getItemList($data)
+    {
+        $list_items_string = "";
+        if (isset($data->items) && count($data->items) > 0) {
+            foreach ($data->items as $item) {
+                $list_items_string .= "<chrpm>$item->strItemName</chrpm>";
+                $list_items_string .= "<chrpp>$item->strItemBrand</chrpp>";
+                $list_items_string .= "<chrggxh>$item->strItemSpecifications</chrggxh>";
+                $list_items_string .= "<chrjz>$item->numItemUnitPrice</chrjz>";
+                $list_items_string .= "<chrjs>$item->numItemQuantity</chrjs>";
+            }
+        }
+        return $list_items_string;
+    }
 }
