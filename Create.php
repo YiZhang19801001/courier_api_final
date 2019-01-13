@@ -36,6 +36,7 @@ $response_arr = array();
 // courier instance container
 $courier;
 
+// create courier instance according to courier code
 switch ($courier_name) {
     case '4PX':
         $courier = new PX4($db, 1);
@@ -57,10 +58,11 @@ switch ($courier_name) {
 
 // call api to finish the request
 $curl_response = $courier->callApi($data_raw);
+// decode json_string to json_object
 $decoded_response = json_decode($curl_response);
-
+// call model function to refactor the response data which will be used as part of response message to POS
 $res_arr = $courier->makeResponseMsg($decoded_response->ResponseCode);
-
+// create reponse array for POS
 $response_arr = array(
     "orderNumber" => isset($decoded_response->Data) ? $decoded_response->Data : "",
     "resMsg" => $res_arr['text'] . '  ( ' . $decoded_response->Message . ' )',
