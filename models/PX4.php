@@ -99,62 +99,104 @@ class PX4 extends Courier
 
     public function callApi($data_raw)
     {
+        $response_arr = array();
+        switch ($this->request_type) {
+            case 1:
+                //map values
+                $data_arr = array(
+                    "Token" => $this->getApiKey(),
+                    "Data" => [
+                        "ShipperOrderNo" => Helper::cleanValue($data_raw->strOrderNo),
+                        "ServiceTypeCode" => Helper::cleanValue($data_raw->strServiceTypeCode),
+                        "TerminalCode" => Helper::cleanValue($data_raw->strShopCode),
+                        "ConsignerName" => Helper::cleanValue($data_raw->strSenderName),
+                        "ConsignerMobile" => Helper::cleanValue($data_raw->strSenderMobile),
+                        "ConsignerProvinceName" => Helper::cleanValue($data_raw->strSenderProvinceName),
+                        "ConsignerCityName" => Helper::cleanValue($data_raw->strSenderCityName),
+                        "ConsignerAddress" => Helper::cleanValue($data_raw->strSenderAddress),
+                        "ConsignerPostCode" => Helper::cleanValue($data_raw->strSenderPostCode),
+                        "ItemDeclareCurrency" => Helper::cleanValue($data_raw->strItemCurrency),
+                        "ConsigneeName" => Helper::cleanValue($data_raw->strReceiverName),
+                        "CountryISO2" => Helper::cleanValue($data_raw->strCountryISO2),
+                        "Province" => Helper::cleanValue($data_raw->strReceiverProvince),
+                        "City" => Helper::cleanValue($data_raw->strReceiverCity),
+                        "District" => Helper::cleanValue($data_raw->strReceiverDistrict),
+                        "ConsigneeStreetDoorNo" => Helper::cleanValue($data_raw->strReceiverDoorNo),
+                        "ConsigneeMobile" => Helper::cleanValue($data_raw->strReceiverMobile),
+                        "ConsigneeIDNumber" => Helper::cleanValue($data_raw->strReceiverIDNumber),
+                        "ConsigneeIDFrontCopy" => Helper::cleanValue($data_raw->strReceiverIDFrontCopy),
+                        "ConsigneeIDBackCopy" => Helper::cleanValue($data_raw->strReceiverIDBackCopy),
+                        "OrderWeight" => Helper::cleanValue($data_raw->strOrderWeight),
+                        "WeightUnit" => Helper::cleanValue($data_raw->strWeightUnit),
+                        "EndDeliveryType" => Helper::cleanValue($data_raw->strEndDelivertyType),
+                        "InsuranceTypeCode" => Helper::cleanValue($data_raw->strInsuranceTypeCode),
+                        "InsuranceExpense" => Helper::cleanValue($data_raw->numInsuranceExpense),
+                        "TraceSourceNumber" => Helper::cleanValue($data_raw->strTraceNumber),
+                        "Remarks" => Helper::cleanValue($data_raw->strRemarks),
+                        "ITEMS" => $this->getItems(isset($data_raw->items) ? $data_raw->items : [])
+                    ]
 
-        //map values
-        $data_arr = array(
-            "Token" => $this->getApiKey(),
-            "Data" => [
-                "ShipperOrderNo" => Helper::cleanValue($data_raw->strOrderNo),
-                "ServiceTypeCode" => Helper::cleanValue($data_raw->strServiceTypeCode),
-                "TerminalCode" => Helper::cleanValue($data_raw->strShopCode),
-                "ConsignerName" => Helper::cleanValue($data_raw->strSenderName),
-                "ConsignerMobile" => Helper::cleanValue($data_raw->strSenderMobile),
-                "ConsignerProvinceName" => Helper::cleanValue($data_raw->strSenderProvinceName),
-                "ConsignerCityName" => Helper::cleanValue($data_raw->strSenderCityName),
-                "ConsignerAddress" => Helper::cleanValue($data_raw->strSenderAddress),
-                "ConsignerPostCode" => Helper::cleanValue($data_raw->strSenderPostCode),
-                "ItemDeclareCurrency" => Helper::cleanValue($data_raw->strItemCurrency),
-                "ConsigneeName" => Helper::cleanValue($data_raw->strReceiverName),
-                "CountryISO2" => Helper::cleanValue($data_raw->strCountryISO2),
-                "Province" => Helper::cleanValue($data_raw->strReceiverProvince),
-                "City" => Helper::cleanValue($data_raw->strReceiverCity),
-                "District" => Helper::cleanValue($data_raw->strReceiverDistrict),
-                "ConsigneeStreetDoorNo" => Helper::cleanValue($data_raw->strReceiverDoorNo),
-                "ConsigneeMobile" => Helper::cleanValue($data_raw->strReceiverMobile),
-                "ConsigneeIDNumber" => Helper::cleanValue($data_raw->strReceiverIDNumber),
-                "ConsigneeIDFrontCopy" => Helper::cleanValue($data_raw->strReceiverIDFrontCopy),
-                "ConsigneeIDBackCopy" => Helper::cleanValue($data_raw->strReceiverIDBackCopy),
-                "OrderWeight" => Helper::cleanValue($data_raw->strOrderWeight),
-                "WeightUnit" => Helper::cleanValue($data_raw->strWeightUnit),
-                "EndDeliveryType" => Helper::cleanValue($data_raw->strEndDelivertyType),
-                "InsuranceTypeCode" => Helper::cleanValue($data_raw->strInsuranceTypeCode),
-                "InsuranceExpense" => Helper::cleanValue($data_raw->numInsuranceExpense),
-                "TraceSourceNumber" => Helper::cleanValue($data_raw->strTraceNumber),
-                "Remarks" => Helper::cleanValue($data_raw->strRemarks),
-                "ITEMS" => $this->getItemsHelper(isset($data_raw->items) ? $data_raw->items : [])
-            ]
+                );
 
-        );
+                //prepare request body
+                $data_string = json_encode($data_arr);
+                $url = $this->getUrl();
+                $curl = curl_init($url);
 
-        //prepare request body
-        $data_string = json_encode($data_arr);
-        $url = $this->getUrl();
-        $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
+                $curl_response = curl_exec($curl);
 
-        $curl_response = curl_exec($curl);
+                if ($curl_response === false) {
+                    $info = curl_getinfo($curl);
+                    curl_close($curl);
+                    die('error occured during curl exec. Additioanl info: ' . var_export($info));
+                }
 
-        if ($curl_response === false) {
-            $info = curl_getinfo($curl);
-            curl_close($curl);
-            die('error occured during curl exec. Additioanl info: ' . var_export($info));
+                curl_close($curl);
+
+                // decode json_string to json_object
+                $decoded_response = json_decode($curl_response);
+                // call model function to refactor the response data which will be used as part of response message to POS
+                $res_arr = $this->makeResponseMsg($decoded_response->ResponseCode);
+                // create reponse array for POS
+                $response_arr = array(
+                    "orderNumber" => isset($decoded_response->Data) ? $decoded_response->Data : "",
+                    "resMsg" => $res_arr['text'] . '  ( ' . $decoded_response->Message . ' )',
+                    "resCode" => $res_arr['code'],
+                    "TaxAmount" => isset($decoded_response->TaxAmount) ? $decoded_response->UnionOrderNumber : "",
+                    "TaxCurrencyCode" => isset($decoded_response->CurrencyCodeTax) ? $decoded_response->CurrencyCodeTax : "",
+                );
+
+                return $response_arr;
+
+            default:
+                # code...
+                break;
         }
+    }
 
-        curl_close($curl);
-        return $curl_response;
+    private function getItems($arr_item)
+    {
+        $list_items = array();
+        foreach ($arr_item as $item) {
+            $list_item = array(
+                "ItemSKU" => isset($item->strItemSKU) ? $this->cleanValue($item->strItemSKU) : null,
+                "ItemDeclareType" => isset($item->strItemDeclareType) ? $this->cleanValue($item->strItemDeclareType) : null,
+                "ItemName" => isset($item->strItemName) ? $this->cleanValue($item->strItemName) : null,
+                "Specifications" => isset($item->strItemSpecifications) ? $this->cleanValue($item->strItemSpecifications) : null,
+                "ItemQuantity" => isset($item->numItemQuantity) ? $this->cleanValue($item->numItemQuantity) : null,
+                "ItemBrand" => isset($item->strItemBrand) ? $this->cleanValue($item->strItemBrand) : null,
+                "ItemUnitPrice" => isset($item->numItemUnitPrice) ? $this->cleanValue($item->numItemUnitPrice) : null,
+                "PreferentialSign" => isset($item->strIsDiscounted) ? $this->cleanValue($item->strIsDiscounted) : null,
+            );
+
+            array_push($list_items, $list_item);
+        }
+        return $list_items;
+
     }
 }

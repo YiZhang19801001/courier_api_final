@@ -31,8 +31,6 @@ $db = $database->connect();
 // get courier name from request to determine which instance to create and which process to apply
 $courier_name = isset($data_raw->strProviderCode) ? $data_raw->strProviderCode : '';
 
-// json result container
-$response_arr = array();
 // courier instance container
 $courier;
 
@@ -56,23 +54,8 @@ switch ($courier_name) {
         break;
 }
 
-// call api to finish the request
-$curl_response = $courier->callApi($data_raw);
-// decode json_string to json_object
-$decoded_response = json_decode($curl_response);
-// call model function to refactor the response data which will be used as part of response message to POS
-$res_arr = $courier->makeResponseMsg($decoded_response->ResponseCode);
-// create reponse array for POS
-$response_arr = array(
-    "orderNumber" => isset($decoded_response->Data) ? $decoded_response->Data : "",
-    "resMsg" => $res_arr['text'] . '  ( ' . $decoded_response->Message . ' )',
-    "resCode" => $res_arr['code'],
-    "TaxAmount" => isset($decoded_response->TaxAmount) ? $decoded_response->UnionOrderNumber : "",
-    "TaxCurrencyCode" => isset($decoded_response->CurrencyCodeTax) ? $decoded_response->CurrencyCodeTax : "",
-);
-
 // encode response objet to json_string
-$final_response = json_encode($response_arr);
+$final_response = json_encode($courier->callApi($data_raw));
 
 // write api response data to logger
 Helper::logger($dateTimeForLogger, $myFile, 'finish request', $response_arr);
