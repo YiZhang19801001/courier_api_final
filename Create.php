@@ -8,6 +8,11 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,
 include_once './config/Database.php';
 include_once './models/Courier.php';
 include_once './models/Helper.php';
+include_once './models/PX4.php';
+include_once './models/CQCHS.php';
+include_once './models/AUEX.php';
+include_once './models/EWE.php';
+include_once './models/UnknowCourier.php';
 // Turn off all error reporting
 // error_reporting(0);
 
@@ -54,8 +59,11 @@ switch ($courier_name) {
         break;
 }
 
+// call courier api make request
+$response_arr = $courier->callApi($data_raw);
+
 // encode response objet to json_string
-$final_response = json_encode($courier->callApi($data_raw));
+$final_response = json_encode($response_arr);
 
 // write api response data to logger
 Helper::logger($dateTimeForLogger, $myFile, 'finish request', $response_arr);

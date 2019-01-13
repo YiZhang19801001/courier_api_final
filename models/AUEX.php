@@ -2,7 +2,7 @@
 include_once "./Courier.php";
 include_once "./Helper.php";
 
-class CQCHS extends Courier
+class AUEX extends Courier
 {
     //DB stuff
     private $courier_code;
