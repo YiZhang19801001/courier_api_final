@@ -64,6 +64,50 @@ class AUEX extends Courier
 
                 return $response_arr;
 
+            case 2:
+                $AUEXTOKEN = $this->getToken();
+// die('token' . $AUEXTOKEN);
+
+// die('data_arr:' . json_encode($data_arr));
+                //call api to get data
+
+// die('data_string: ' . $data_string);
+                $AuexOrderId = Helper::cleanValue($data_raw->strOrderNo);
+                $url = 'http://aueapi.auexpress.com/api/ShipmentOrderTrack?OrderId=' . $AuexOrderId;
+                $curl = curl_init($url);
+
+//die('auex order id: ' . $AuexOrderId);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+// curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: ' . 'Bearer ' . $AUEXTOKEN));
+
+                $curl_response = curl_exec($curl);
+
+// die('response:' . $curl_response);
+
+                if ($curl_response == "") {
+                    $response_arr = array(
+                        "orderNumber" => Helper::cleanValue($data_raw->strOrderNo),
+                        "resMsg" => 'no found',
+                        "resCode" => '1',
+                        "TrackingList" => [],
+                    );
+                } else {
+                    if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
+                        die('error occured: ' . $decoded->response->errormessage);
+                    }
+                    $decoded_response = json_decode($curl_response);
+
+                    $response_arr = array(
+                        "orderNumber" => Helper::cleanValue($data_raw->strOrderNo),
+                        "resMsg" => isset($decoded_response->ReturnResult) ? $decoded_response->ReturnResult : "",
+                        "resCode" => isset($decoded_response->Code) ? $decoded_response->Code : "",
+                        "TrackingList" => isset($decoded_response->TrackList) ? $this->getTrackingList($decoded_response->TrackList) : [],
+                    );
+
+                }
+                return $response_arr;
+
             default:
                 # code...
                 break;
@@ -165,6 +209,22 @@ class AUEX extends Courier
 
         return $content_string;
 
+    }
+
+    private function getTrackingList($trackList)
+    {
+        $formated_list = array();
+        if (count($trackList) > 0) {
+            foreach ($trackList as $trackListItem) {
+                $new_node = array();
+                $new_node['location'] = Helper::cleanValue($trackListItem->Location);
+                $new_node['time'] = Helper::cleanValue($trackListItem->StatusTime);
+                $new_node['status'] = Helper::cleanValue($trackListItem->StatusDetail);
+
+                array_push($formated_list, $new_node);
+            }
+        }
+        return $formated_list;
     }
 
 }

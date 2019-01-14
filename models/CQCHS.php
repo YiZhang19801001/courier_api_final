@@ -51,7 +51,46 @@ class CQCHS extends Courier
                     );
 
                 }
+                return $response_arr;
 
+            case 2:
+                $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/common/logisticsservice?wsdl";
+                $client = new SoapClient($wsdl, array('trace' => 1)); // The trace param will show you errors stack
+
+                $request_param = array(
+                    "fydh" => $data_raw->strOrderNo,
+                    "countrytype" => "au",
+                );
+
+                try
+                {
+                    $responce_param = $client->getLogisticsInformation($request_param);
+                    //$responce_param =  $client->call("webservice_methode_name", $request_param); // Alternative way to call soap method
+
+                    $index = strpos($responce_param->return, ">");
+
+                    $xml = simplexml_load_string(substr($responce_param->return, $index + 1));
+
+                    $json_string = json_encode($xml);
+                    $json_obj = json_decode($json_string);
+
+                    $response_arr = array(
+                        "orderNumber" => $json_obj->fydh,
+                        "resMsg" => !isset($json_obj->Logisticsback) ? "order not found" : "order found",
+                        "resCode" => !isset($json_obj->Logisticsback) ? "1" : "0",
+                        "TrackingList" => isset($json_obj->Logisticsback) ? $this->getTrackingList($json_obj->Logisticsback, $json_obj->kdgsname) : "",
+                    );
+
+                } catch (Exception $e) {
+                    $response_arr = array(
+                        "orderNumber" => "",
+                        "resMsg" => $e->getMessage(),
+                        "resCode" => "1",
+                        "TaxAmount" => "",
+                        "TaxCurrencyCode" => "",
+                    );
+
+                }
                 return $response_arr;
 
             default:
@@ -109,5 +148,29 @@ class CQCHS extends Courier
             }
         }
         return $list_items_string;
+    }
+
+    private function getTrackingList($data, $kdgsname)
+    {
+        $formated_list = array();
+        $flag = json_encode($kdgsname);
+
+        if (is_array($data)) {
+            foreach ($data as $list_item) {
+                $new_node = array();
+                $new_node['location'] = "";
+                $new_node['time'] = isset($list_item->time) ? $list_item->time : "";
+                $new_node['status'] = isset($list_item->ztai) ? $list_item->ztai : "";
+                array_push($formated_list, $new_node);
+            }
+        } else {
+            $new_node = array();
+            $new_node['location'] = "";
+            $new_node['time'] = isset($list_item->time) ? $list_item->time : "";
+            $new_node['status'] = isset($list_item->ztai) ? $list_item->ztai : "";
+
+            array_push($formated_list, $new_node);
+        }
+        return $formated_list;
     }
 }
