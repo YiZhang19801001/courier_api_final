@@ -173,6 +173,50 @@ class PX4 extends Courier
 
                 return $response_arr;
 
+            case 2:
+                //map values
+                $data_arr = array(
+                    "Token" => $this->getApiKey(),
+                    "Data" => ["ShipperOrderNo" => Helper::cleanValue($data_raw->strOrderNo)],
+                );
+
+//call api to get data?
+                $data_string = json_encode($data_arr);
+
+                $url = $this->getUrl();
+                $curl = curl_init($url);
+
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
+
+                $curl_response = curl_exec($curl);
+
+                if ($curl_response === false) {
+                    $info = curl_getinfo($curl);
+                    curl_close($curl);
+                    die('error occured during curl exec. Additioanl info: ' . var_export($info));
+                }
+
+                curl_close($curl);
+
+                $decoded_response = json_decode($curl_response);
+
+                if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
+                    die('error occured: ' . $decoded->response->errormessage);
+                }
+
+                $res_arr = $this->makeResponseMsg($decoded_response->ResponseCode);
+
+                $response_arr = array(
+                    "orderNumber" => isset($decoded_response->Data->ShipperOrderNo) ? $decoded_response->Data->ShipperOrderNo : "",
+                    "resMsg" => $res_arr['text'],
+                    "resCode" => $res_arr['code'],
+                    "TrackingList" => isset($decoded_response->Data->TrackingList) ? $this->getTrackingList($decoded_response->Data->TrackingList) : [],
+                );
+
+                return $response_arr;
             default:
                 # code...
                 break;
@@ -184,19 +228,91 @@ class PX4 extends Courier
         $list_items = array();
         foreach ($arr_item as $item) {
             $list_item = array(
-                "ItemSKU" => isset($item->strItemSKU) ? $this->cleanValue($item->strItemSKU) : null,
-                "ItemDeclareType" => isset($item->strItemDeclareType) ? $this->cleanValue($item->strItemDeclareType) : null,
-                "ItemName" => isset($item->strItemName) ? $this->cleanValue($item->strItemName) : null,
-                "Specifications" => isset($item->strItemSpecifications) ? $this->cleanValue($item->strItemSpecifications) : null,
-                "ItemQuantity" => isset($item->numItemQuantity) ? $this->cleanValue($item->numItemQuantity) : null,
-                "ItemBrand" => isset($item->strItemBrand) ? $this->cleanValue($item->strItemBrand) : null,
-                "ItemUnitPrice" => isset($item->numItemUnitPrice) ? $this->cleanValue($item->numItemUnitPrice) : null,
-                "PreferentialSign" => isset($item->strIsDiscounted) ? $this->cleanValue($item->strIsDiscounted) : null,
+                "ItemSKU" => Helper::cleanValue($item->strItemSKU),
+                "ItemDeclareType" => Helper::cleanValue($item->strItemDeclareType),
+                "ItemName" => Helper::cleanValue($item->strItemName),
+                "Specifications" => Helper::cleanValue($item->strItemSpecifications),
+                "ItemQuantity" => Helper::cleanValue($item->numItemQuantity),
+                "ItemBrand" => Helper::cleanValue($item->strItemBrand),
+                "ItemUnitPrice" => Helper::cleanValue($item->numItemUnitPrice),
+                "PreferentialSign" => Helper::cleanValue($item->strIsDiscounted),
             );
 
             array_push($list_items, $list_item);
         }
         return $list_items;
+
+    }
+
+    private function getTrackingList($trackingList)
+    {
+        $formated_list = array();
+        foreach ($trackingList as $list_item) {
+            $new_node = array();
+            $new_node['location'] = Helper::cleanValue($list_item->TrackLocation);
+            $new_node['time'] = Helper::cleanValue($list_item->TrackTime);
+            $new_node['status'] = $this->translateStatus($list_item->TrackStatusCode);
+            array_push($formated_list, $new_node);
+        }
+        return $formated_list;
+    }
+
+    private function translateStatus($code)
+    {
+        switch ($code) {
+            case 'PU':
+                return "The goods have been taken from the sender";
+            case 'CL':
+                return "Site collection";
+            case 'AO':
+                return "arrived oversea warehouse";
+            case 'OC':
+                return "operation complete";
+            case 'LO':
+                return "leave oversea warehouse";
+            case 'FT':
+                return "departure";
+            case 'FL':
+                return "arrived";
+            case 'TRM':
+                return "Being sent to customs clearance port";
+            case 'CCE':
+                return "clearance port complete";
+            case 'OK':
+                return "Delivery Complete";
+            case 'CP':
+                return "await";
+            case 'CCMC':
+                return "product lost";
+            case 'CCSD':
+                return "The goods have been destroyed";
+            case 'HC':
+                return "Customs fastener";
+            case 'IDCS':
+                return "ID card information collection";
+            case 'IS':
+                return "Handed over domestic delivery service provider";
+            case 'PL':
+                return "Internal operation of the operation center";
+            case 'PO':
+                return "Overseas warehouse made orders";
+            case 'RT':
+                return "The goods have been returned to the place of delivery";
+            case 'SD':
+                return "Damaged goods";
+            case 'SH':
+                return "Temporary deduction of goods";
+            case 'PTW':
+                return "The parcel is taken from the airport and transferred to the customs supervision warehouse.";
+            case 'WA':
+                return "Waiting to arrange a flight";
+            case 'WT':
+                return "Waiting for a transfer";
+            case "WD":
+                return "Waiting for customs clearance";
+            default:
+                return "unkown status";
+        }
 
     }
 }
