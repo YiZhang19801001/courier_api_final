@@ -1,6 +1,6 @@
 <?php
-include_once "./Courier.php";
-include_once "./Helper.php";
+include_once "Courier.php";
+include_once "Helper.php";
 
 class AUEX extends Courier
 {

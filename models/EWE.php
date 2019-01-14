@@ -1,8 +1,8 @@
 <?php
-include_once "./Courier.php";
-include_once "./Helper.php";
+include_once "Courier.php";
+include_once "Helper.php";
 
-class PX4 extends Courier
+class EWE extends Courier
 {
     protected $username = "API-TEST";
     protected $password = "DIM875439GYT892130";

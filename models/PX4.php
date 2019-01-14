@@ -1,13 +1,13 @@
 <?php
-include_once "./Courier.php";
-include_once "./Helper.php";
+include_once "Courier.php";
+include_once "Helper.php";
 
 class PX4 extends Courier
 {
     //DB stuff
     private $courier_table = 'couriers';
 
-    private $courier_code;
+    private $courier_code = '4PX';
 
     //Constructor with DB
     public function __construct($db, $request_type)
@@ -24,7 +24,7 @@ class PX4 extends Courier
         $stmt = $this->conn->prepare($query);
 
         // Bind Param
-        $stmt->bindParam(':courier_code', '4PX');
+        $stmt->bindParam(':courier_code', $this->courier_code);
 
         //Execute query
         $stmt->execute();
@@ -45,7 +45,7 @@ class PX4 extends Courier
         $stmt = $this->conn->prepare($query);
 
         // Bind Param
-        $stmt->bindParam(':courier_code', '4PX');
+        $stmt->bindParam(':courier_code', $this->courier_code);
         $stmt->bindParam(':request_type', $this->request_type);
 
         //Execute query
@@ -68,7 +68,7 @@ class PX4 extends Courier
         $stmt = $this->conn->prepare($query);
 
         // Bind Param
-        $stmt->bindParam(':courier_code', "4PX");
+        $stmt->bindParam(':courier_code', $this->courier_code);
         $stmt->bindParam(':request_type', $this->request_type);
         $stmt->bindParam(':code', $code);
 

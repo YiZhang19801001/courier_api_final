@@ -5,14 +5,14 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
-include_once './config/Database.php';
-include_once './models/Courier.php';
-include_once './models/Helper.php';
-include_once './models/PX4.php';
-include_once './models/CQCHS.php';
-include_once './models/AUEX.php';
-include_once './models/EWE.php';
-include_once './models/UnknowCourier.php';
+include_once 'config/Database.php';
+include_once 'models/Courier.php';
+include_once 'models/Helper.php';
+include_once 'models/PX4.php';
+include_once 'models/CQCHS.php';
+include_once 'models/AUEX.php';
+include_once 'models/EWE.php';
+include_once 'models/UnknowCourier.php';
 // Turn off all error reporting
 // error_reporting(0);
 
