@@ -53,23 +53,23 @@ class EWE extends Courier
                 $data_arr = array(
                     "USERNAME" => $this->username,
                     "APIPASSWORD" => $this->password,
-                    "BoxNo" => Helper::cleanValue($data_raw->strBoxNo),
-                    "REFERENCENO" => Helper::cleanValue($data_raw->strReferenceNo),
-                    "ExtraRefernces" => [""],
+                    "BoxNo" => isset($data_raw->strBoxNo) ? Helper::cleanValue($data_raw->strBoxNo) : "",
+                    "REFERENCENO" => isset($data_raw->strReferenceNo) ? Helper::cleanValue($data_raw->strReferenceNo) : "",
+                    "ExtraReferences" => [""],
                     "TotalPackage" => 1,
-                    "Remark" => Helper::cleanValue($data_raw->strRemark),
-                    "DeclaredWeight" => Helper::cleanValue($data_raw->strOrderWeight),
-                    "IsEconomic" => Helper::cleanValue($data_raw->boolIsEconomic),
-                    "ContentType" => Helper::cleanValue($data_raw->intContentType),
-                    "IsUseStock" => Helper::cleanValue($data_raw->intIsUseStock),
-                    "ValueAddedService" => Helper::cleanValue($data_raw->strValueAddedService),
-                    "Is3PL" => Helper::cleanValue($data_raw->strIs3PL),
-                    "CustomerClientId" => Helper::cleanValue($data_raw->strShopCode),
-                    "IsUseCcic" => Helper::cleanValue($data_raw->intIsUseCcic),
-                    "auMerchantId" => Helper::cleanValue($data_raw->strAuMerchantId),
-                    "DeclareValue" => Helper::cleanValue($data_raw->numDeclaredValue),
-                    "RealWeight" => Helpler::cleanValue($data_raw->numRealWeight),
-                    "OutBizCode" => Helper::cleanValue($data_raw->strOutBizCode),
+                    "Remark" => isset($data_raw->strRemark) ? Helper::cleanValue($data_raw->strRemark) : "",
+                    "DeclaredWeight" => isset($data_raw->strOrderWeight) ? Helper::cleanValue($data_raw->strOrderWeight) : "",
+                    "IsEconomic" => isset($data_raw->boolIsEconomic) ? Helper::cleanValue($data_raw->boolIsEconomic) : "",
+                    "ContentType" => isset($data_raw->intContentType) ? Helper::cleanValue($data_raw->intContentType) : "",
+                    "IsUseStock" => isset($data_raw->intIsUseStock) ? Helper::cleanValue($data_raw->intIsUseStock) : "",
+                    "ValueAddedService" => isset($data_raw->strValueAddedService) ? Helper::cleanValue($data_raw->strValueAddedService) : "",
+                    "Is3PL" => isset($data_raw->strIs3PL) ? Helper::cleanValue($data_raw->strIs3PL) : "N",
+                    "CustomerClientId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "",
+                    "IsUseCcic" => isset($data_raw->intIsUseCcic) ? Helper::cleanValue($data_raw->intIsUseCcic) : "",
+                    "auMerchantId" => isset($data_raw->strAuMerchantId) ? Helper::cleanValue($data_raw->strAuMerchantId) : "",
+                    "DeclaredValue" => isset($data_raw->numDeclaredValue) ? Helper::cleanValue($data_raw->numDeclaredValue) : "",
+                    "RealWeight" => isset($data_raw->numRealWeight) ? Helper::cleanValue($data_raw->numRealWeight) : "",
+                    "OutBizCode" => isset($data_raw->strOutBizCode) ? Helper::cleanValue($data_raw->strOutBizCode) : "",
                     "Items" => $this->getItems($data_raw),
                     "Sender" => $this->getSender($data_raw),
                     "Receiver" => $this->getReceiver($data_raw),
@@ -77,16 +77,22 @@ class EWE extends Courier
                 );
 
                 //prepare request body
+                // $data_string = '{' . $this->convertArrayToString($data_arr) . "}";
                 $data_string = json_encode($data_arr);
+                // $data_string = json_encode($data_arr);
+                // build the post string here
+
+                // die($data_string);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
 
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array("content-type: application/javascript;charset=UTF-8"));
 
                 $curl_response = curl_exec($curl);
+                die('die: ' . $curl_response);
 
                 if ($curl_response === false) {
                     $info = curl_getinfo($curl);
@@ -115,7 +121,7 @@ class EWE extends Courier
                 //map values
                 $data_arr = array(
                     "Token" => $this->getApiKey(),
-                    "Data" => ["ShipperOrderNo" => Helper::cleanValue($data_raw->strOrderNo)],
+                    "Data" => ["ShipperOrderNo" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : ""],
                 );
 
 //call api to get data?
@@ -160,7 +166,7 @@ class EWE extends Courier
                 //map values
                 $data_arr = array(
                     "Token" => $this->getApiKey(),
-                    "Data" => ["ReferenceNumber" => Helper::cleanValue($data_raw->strOrderNo)],
+                    "Data" => ["ReferenceNumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : ""],
                 );
 
 //call api to get data?
@@ -193,7 +199,7 @@ class EWE extends Courier
                 $res_arr = $this->makeResponseMsg($decoded_response->ResponseCode);
 
                 $response_arr = array(
-                    "orderNumber" => Helper::cleanValue($data_raw->strOrderNo),
+                    "orderNumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
                     "resMsg" => $res_arr['text'],
                     "resCode" => $res_arr['code'],
                 );
@@ -218,7 +224,7 @@ class EWE extends Courier
                     "SKU" => Helper::cleanValue($item->strItemSKU),
                     "Barcode" => "",
                     "Charge" => Helper::cleanValue($item->numItemUnitPrice),
-                    "TotalCharge" => Helper::cleanValue($item->numTotalPrice),
+                    "TotalCharge" => isset($item->numTotalPrice) ? Helper::cleanValue($item->numTotalPrice) : "",
                     "Spec" => Helper::cleanValue($item->strItemSpecifications),
                     "Currency" => "",
                 );
@@ -236,11 +242,11 @@ class EWE extends Courier
         $sender = array();
 
         $sender['Name'] = Helper::cleanValue($data->strSenderName);
-        $sender['Email'] = Helper::cleanValue($data->strSenderEmail);
+        $sender['Email'] = isset($data->strSenderEmail) ? Helper::cleanValue($data->strSenderEmail) : "";
         $sender['Phone'] = Helper::cleanValue($data->strSenderMobile);
         $sender['Street'] = Helper::cleanValue($data->strSenderAddress);
         $sender['City'] = Helper::cleanValue($data->strSenderCityName);
-        $sender['state'] = Helper::cleanValue($data->strSenderProvinceName);
+        $sender['State'] = Helper::cleanValue($data->strSenderProvinceName);
         $sender['Suburb'] = "";
         $sender['Country'] = "AUD";
         $sender['Company'] = "";
@@ -256,12 +262,12 @@ class EWE extends Courier
         $receiver = array();
 
         $receiver['Name'] = Helper::cleanValue($data->strReceiverName);
-        $receiver['Email'] = Helper::cleanValue($data->strReceiverEmail);
+        $receiver['Email'] = isset($data->strReceiverEmail) ? Helper::cleanValue($data->strReceiverEmail) : "";
         $receiver['Phone'] = Helper::cleanValue($data->strReceiverMobile);
         $receiver['Street'] = Helper::cleanValue($data->strReceiverDoorNo);
         $receiver['City'] = Helper::cleanValue($data->strReceiverCity);
-        $receiver['state'] = Helper::cleanValue($data->strReceiverProvince);
-        $receiver['Suburb'] = Hepler::cleanValue($data->strReceiverDistrict);
+        $receiver['State'] = Helper::cleanValue($data->strReceiverProvince);
+        $receiver['Suburb'] = isset($data->strReceiverDistrict) ? Helper::cleanValue($data->strReceiverDistrict) : "";
         $receiver['Country'] = "AUD";
         $receiver['Company'] = "";
         $receiver['Postcode'] = Helper::cleanValue($data->strSenderPostCode);
@@ -274,9 +280,9 @@ class EWE extends Courier
 
     private function getPayer($data)
     {
-        $payer = [];
+
         // add code ...
-        return $payer;
+        return json_decode("{}");
     }
 
     private function getTrackingList($trackingList)
@@ -292,62 +298,20 @@ class EWE extends Courier
         return $formated_list;
     }
 
-    private function translateStatus($code)
+    private function convertArrayToString($array)
     {
-        switch ($code) {
-            case 'PU':
-                return "The goods have been taken from the sender";
-            case 'CL':
-                return "Site collection";
-            case 'AO':
-                return "arrived oversea warehouse";
-            case 'OC':
-                return "operation complete";
-            case 'LO':
-                return "leave oversea warehouse";
-            case 'FT':
-                return "departure";
-            case 'FL':
-                return "arrived";
-            case 'TRM':
-                return "Being sent to customs clearance port";
-            case 'CCE':
-                return "clearance port complete";
-            case 'OK':
-                return "Delivery Complete";
-            case 'CP':
-                return "await";
-            case 'CCMC':
-                return "product lost";
-            case 'CCSD':
-                return "The goods have been destroyed";
-            case 'HC':
-                return "Customs fastener";
-            case 'IDCS':
-                return "ID card information collection";
-            case 'IS':
-                return "Handed over domestic delivery service provider";
-            case 'PL':
-                return "Internal operation of the operation center";
-            case 'PO':
-                return "Overseas warehouse made orders";
-            case 'RT':
-                return "The goods have been returned to the place of delivery";
-            case 'SD':
-                return "Damaged goods";
-            case 'SH':
-                return "Temporary deduction of goods";
-            case 'PTW':
-                return "The parcel is taken from the airport and transferred to the customs supervision warehouse.";
-            case 'WA':
-                return "Waiting to arrange a flight";
-            case 'WT':
-                return "Waiting for a transfer";
-            case "WD":
-                return "Waiting for customs clearance";
-            default:
-                return "unkown status";
+        $res = "";
+        // \"ContentType\": \"\",\n
+        foreach ($array as $key => $value) {
+            if (!is_array($value)) {
+                $res .= '\"' . $key . '\":' . '\"' . $value . '\",\n';
+
+            } else {
+                $res .= $this->convertArrayToString($value);
+            }
         }
 
+        return $res;
     }
+
 }
