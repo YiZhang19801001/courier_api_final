@@ -18,7 +18,8 @@ class EWE extends Courier
         switch ($this->request_type) {
             case 1:
                 return "https://newomstest.ewe.com.au/eweApi/ewe/api/createOrder";
-
+            case 2:
+                return "https://api.ewe.com.au/oms/api/tracking/ewepost";
             default:
                 # code...
                 break;
@@ -120,8 +121,8 @@ class EWE extends Courier
             case 2:
                 //map values
                 $data_arr = array(
-                    "Token" => $this->getApiKey(),
-                    "Data" => ["ShipperOrderNo" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : ""],
+                    "querystring" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
+                    "IsDetailed" => "true",
                 );
 
 //call api to get data?
@@ -150,59 +151,37 @@ class EWE extends Courier
                 if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
                     die('error occured: ' . $decoded->response->errormessage);
                 }
+                // die($curl_response);
+                if (isset($decoded_response->Payload)) {
+                    $res_arr = $this->makeTrackingResponseMsg($decoded_response->Payload);
 
-                $res_arr = $this->makeResponseMsg($decoded_response->ResponseCode);
+                    $response_arr = array(
+                        "orderNumber" => $res_arr['orderNumber'],
+                        "resMsg" => $res_arr['message'],
+                        "resCode" => $res_arr['code'],
+                        "TrackingList" => isset($decoded_response->Data->TrackingList) ? $this->getTrackingList($decoded_response->Data->TrackingList) : [],
+                    );
 
-                $response_arr = array(
-                    "orderNumber" => isset($decoded_response->Data->ShipperOrderNo) ? $decoded_response->Data->ShipperOrderNo : "",
-                    "resMsg" => $res_arr['text'],
-                    "resCode" => $res_arr['code'],
-                    "TrackingList" => isset($decoded_response->Data->TrackingList) ? $this->getTrackingList($decoded_response->Data->TrackingList) : [],
-                );
+                } else {
+                    $response_arr = array(
+                        "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                        "resMsg" => "courier api not available at the moment, please try later(运输公司服务器链接异常，请稍后再试)",
+                        "resCode" => 'ERR99999',
+                        "TrackingList" => []
+                    );
+
+                }
 
                 return $response_arr;
 
             case 3:
-                //map values
-                $data_arr = array(
-                    "Token" => $this->getApiKey(),
-                    "Data" => ["ReferenceNumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : ""],
-                );
-
-//call api to get data?
-                $data_string = json_encode($data_arr);
-
-                $url = $courier->getUrl();
-                $curl = curl_init($url);
-
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
-
-                $curl_response = curl_exec($curl);
-
-                if ($curl_response === false) {
-                    $info = curl_getinfo($curl);
-                    curl_close($curl);
-                    die('error occured during curl exec. Additioanl info: ' . var_export($info));
-                }
-
-                curl_close($curl);
-
-                $decoded_response = json_decode($curl_response);
-
-                if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
-                    die('error occured: ' . $decoded->response->errormessage);
-                }
-
-                $res_arr = $this->makeResponseMsg($decoded_response->ResponseCode);
-
                 $response_arr = array(
-                    "orderNumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
-                    "resMsg" => $res_arr['text'],
-                    "resCode" => $res_arr['code'],
+                    "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                    "resMsg" => "method not allow, please check your courier name(运输公司名未开放该服务，请检查您提交的运输公司名)",
+                    "resCode" => 'ERR99999',
+                    "TrackingList" => []
                 );
+
                 return $response_arr;
 
             default:
@@ -235,6 +214,13 @@ class EWE extends Courier
         }
         return $list_items;
 
+    }
+
+    private function makeTrackingResponseMsg($array)
+    {
+        $data = $array[0];
+        $response_code = $data->DeliveryStatus == 0 ? "1" : "0";
+        return array('orderNumber' => $data->EweNo, 'message' => $data->Reminder, 'code' => $response_code);
     }
 
     private function getSender($data)
