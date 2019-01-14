@@ -217,6 +217,50 @@ class PX4 extends Courier
                 );
 
                 return $response_arr;
+
+            case 3:
+                //map values
+                $data_arr = array(
+                    "Token" => $this->getApiKey(),
+                    "Data" => ["ReferenceNumber" => Helper::cleanValue($data_raw->strOrderNo)],
+                );
+
+//call api to get data?
+                $data_string = json_encode($data_arr);
+
+                $url = $courier->getUrl();
+                $curl = curl_init($url);
+
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
+
+                $curl_response = curl_exec($curl);
+
+                if ($curl_response === false) {
+                    $info = curl_getinfo($curl);
+                    curl_close($curl);
+                    die('error occured during curl exec. Additioanl info: ' . var_export($info));
+                }
+
+                curl_close($curl);
+
+                $decoded_response = json_decode($curl_response);
+
+                if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
+                    die('error occured: ' . $decoded->response->errormessage);
+                }
+
+                $res_arr = $this->makeResponseMsg($decoded_response->ResponseCode);
+
+                $response_arr = array(
+                    "orderNumber" => Helper::cleanValue($data_raw->strOrderNo),
+                    "resMsg" => $res_arr['text'],
+                    "resCode" => $res_arr['code'],
+                );
+                return $response_arr;
+
             default:
                 # code...
                 break;

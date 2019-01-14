@@ -8,12 +8,18 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,
 include_once './config/Database.php';
 include_once './models/Courier.php';
 include_once './models/Helper.php';
+include_once './models/PX4.php';
+include_once './models/CQCHS.php';
+include_once './models/AUEX.php';
+include_once './models/EWE.php';
+include_once './models/UnknowCourier.php';
+
 // Turn off all error reporting
 // error_reporting(0);
 
 $dateTimeForLogger = Helper::getDateTime();
 
-$myFile = "./log/create/logger $dateTimeForLogger->date.json";
+$myFile = "./log/track/logger $dateTimeForLogger->date.json";
 
 // write POS request body into logger
 $request_body = file_get_contents("php://input");

@@ -108,6 +108,16 @@ class AUEX extends Courier
                 }
                 return $response_arr;
 
+            case 3:
+                $response_arr = array(
+                    "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                    "resMsg" => "method not allow, please check your courier name(运输公司名未开放该服务，请检查您提交的运输公司名)",
+                    "resCode" => 'ERR99999',
+                    "TrackingList" => []
+                );
+
+                return $response_arr;
+
             default:
                 # code...
                 break;
