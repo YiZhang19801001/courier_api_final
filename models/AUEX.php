@@ -72,7 +72,7 @@ class AUEX extends Courier
                 //call api to get data
 
 // die('data_string: ' . $data_string);
-                $AuexOrderId = Helper::cleanValue($data_raw->strOrderNo);
+                $AuexOrderId = isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "";
                 $url = 'http://aueapi.auexpress.com/api/ShipmentOrderTrack?OrderId=' . $AuexOrderId;
                 $curl = curl_init($url);
 
@@ -87,7 +87,7 @@ class AUEX extends Courier
 
                 if ($curl_response == "") {
                     $response_arr = array(
-                        "orderNumber" => Helper::cleanValue($data_raw->strOrderNo),
+                        "orderNumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
                         "resMsg" => 'no found',
                         "resCode" => '1',
                         "TrackingList" => [],
@@ -99,7 +99,7 @@ class AUEX extends Courier
                     $decoded_response = json_decode($curl_response);
 
                     $response_arr = array(
-                        "orderNumber" => Helper::cleanValue($data_raw->strOrderNo),
+                        "orderNumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
                         "resMsg" => isset($decoded_response->ReturnResult) ? $decoded_response->ReturnResult : "",
                         "resCode" => isset($decoded_response->Code) ? $decoded_response->Code : "",
                         "TrackingList" => isset($decoded_response->TrackList) ? $this->getTrackingList($decoded_response->TrackList) : [],
@@ -158,31 +158,31 @@ class AUEX extends Courier
     private function createRequestArray($data_raw)
     {
         $request_array = array(
-            "OrderId" => Helper::cleanValue($data_raw->strOrderNo),
+            "OrderId" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
             "MemberId" => 2742,
             "BrandId" => 1,
             // "TerminalCode" => isset($data_raw->strShopCode) ? $Helper->cleanValue($data_raw->strShopCode) : null,
-            "SenderName" => Helper::cleanValue($data_raw->strSenderName),
-            "SenderPhone" => Helper::cleanValue($data_raw->strSenderMobile),
-            "SenderProvince" => Helper::cleanValue($data_raw->strSenderProvinceName),
-            "SenderCity" => Helper::cleanValue($data_raw->strSenderCityName),
-            "SenderAddr1" => Helper::cleanValue($data_raw->strSenderAddress),
-            "SenderPostCode" => Helper::cleanValue($data_raw->strSenderPostCode),
+            "SenderName" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
+            "SenderPhone" => isset($data_raw->strSenderMobile) ? Helper::cleanValue($data_raw->strSenderMobile) : "",
+            "SenderProvince" => isset($data_raw->strSenderProvinceName) ? Helper::cleanValue($data_raw->strSenderProvinceName) : "",
+            "SenderCity" => isset($data_raw->strSenderCityName) ? Helper::cleanValue($data_raw->strSenderCityName) : "",
+            "SenderAddr1" => isset($data_raw->strSenderAddress) ? Helper::cleanValue($data_raw->strSenderAddress) : "",
+            "SenderPostCode" => isset($data_raw->strSenderPostCode) ? Helper::cleanValue($data_raw->strSenderPostCode) : "",
             // "ItemDeclareCurrency" => isset($data_raw->strItemCurrency) ? $Helper->cleanValue($data_raw->strItemCurrency) : null,
-            "ReceiverName" => Helper::cleanValue($data_raw->strReceiverName),
-            "ReceiverPhone" => Helper::cleanValue($data_raw->strReceiverMobile),
+            "ReceiverName" => isset($data_raw->strReceiverName) ? Helper::cleanValue($data_raw->strReceiverName) : "",
+            "ReceiverPhone" => isset($data_raw->strReceiverMobile) ? Helper::cleanValue($data_raw->strReceiverMobile) : "",
             // "CountryISO2" => isset($data_raw->strCountryISO2) ? $Helper->cleanValue($data_raw->strCountryISO2) : null,
-            "ReceiverProvince" => Helper::cleanValue($data_raw->strReceiverProvince),
-            "ReceiverCity" => Helper::cleanValue($data_raw->strReceiverCity),
+            "ReceiverProvince" => isset($data_raw->strReceiverProvince) ? Helper::cleanValue($data_raw->strReceiverProvince) : "",
+            "ReceiverCity" => isset($data_raw->strReceiverCity) ? Helper::cleanValue($data_raw->strReceiverCity) : "",
             // "District" => isset($data_raw->strReceiverDistrict) ? $Helper->cleanValue($data_raw->strReceiverDistrict) : null,
-            "ReceiverAddr1" => Helper::cleanValue($data_raw->strReceiverDoorNo),
+            "ReceiverAddr1" => isset($data_raw->strReceiverDoorNo) ? Helper::cleanValue($data_raw->strReceiverDoorNo) : "",
             "ReceiverEmail" => "",
             "ReceiverCountry" => "",
             "ReceiverPostCode" => "",
-            "ReceiverPhotoId" => Helper::cleanValue($data_raw->strReceiverIDNumber),
+            "ReceiverPhotoId" => isset($data_raw->strReceiverIDNumber) ? Helper::cleanValue($data_raw->strReceiverIDNumber) : "",
             // "ConsigneeIDFrontCopy" => isset($data_raw->strReceiverIDFrontCopy) ? $Helper->cleanValue($data_raw->strReceiverIDFrontCopy) : null,
             // "ConsigneeIDBackCopy" => isset($data_raw->strReceiverIDBackCopy) ? $Helper->cleanValue($data_raw->strReceiverIDBackCopy) : null,
-            "ChargeWeight" => Helper::cleanValue($data_raw->strOrderWeight),
+            "ChargeWeight" => isset($data_raw->strOrderWeight) ? Helper::cleanValue($data_raw->strOrderWeight) : "",
             // "WeightUnit" => isset($data_raw->strWeightUnit) ? $Helper->cleanValue($data_raw->strWeightUnit) : null,
             // "EndDeliveryType" => isset($data_raw->strEndDelivertyType) ? $Helper->cleanValue($data_raw->strEndDelivertyType) : null,
             // "InsuranceTypeCode" => isset($data_raw->strInsuranceTypeCode) ? $Helper->cleanValue($data_raw->strInsuranceTypeCode) : "",
@@ -227,9 +227,9 @@ class AUEX extends Courier
         if (count($trackList) > 0) {
             foreach ($trackList as $trackListItem) {
                 $new_node = array();
-                $new_node['location'] = Helper::cleanValue($trackListItem->Location);
-                $new_node['time'] = Helper::cleanValue($trackListItem->StatusTime);
-                $new_node['status'] = Helper::cleanValue($trackListItem->StatusDetail);
+                $new_node['location'] = isset($trackListItem->Location) ? Helper::cleanValue($trackListItem->Location) : "";
+                $new_node['time'] = isset($trackListItem->StatusTime) ? Helper::cleanValue($trackListItem->StatusTime) : "";
+                $new_node['status'] = isset($trackListItem->StatusDetail) ? Helper::cleanValue($trackListItem->StatusDetail) : "";
 
                 array_push($formated_list, $new_node);
             }

@@ -106,33 +106,33 @@ class PX4 extends Courier
                 $data_arr = array(
                     "Token" => $this->getApiKey(),
                     "Data" => [
-                        "ShipperOrderNo" => Helper::cleanValue($data_raw->strOrderNo),
-                        "ServiceTypeCode" => Helper::cleanValue($data_raw->strServiceTypeCode),
-                        "TerminalCode" => Helper::cleanValue($data_raw->strShopCode),
-                        "ConsignerName" => Helper::cleanValue($data_raw->strSenderName),
-                        "ConsignerMobile" => Helper::cleanValue($data_raw->strSenderMobile),
-                        "ConsignerProvinceName" => Helper::cleanValue($data_raw->strSenderProvinceName),
-                        "ConsignerCityName" => Helper::cleanValue($data_raw->strSenderCityName),
-                        "ConsignerAddress" => Helper::cleanValue($data_raw->strSenderAddress),
-                        "ConsignerPostCode" => Helper::cleanValue($data_raw->strSenderPostCode),
-                        "ItemDeclareCurrency" => Helper::cleanValue($data_raw->strItemCurrency),
-                        "ConsigneeName" => Helper::cleanValue($data_raw->strReceiverName),
-                        "CountryISO2" => Helper::cleanValue($data_raw->strCountryISO2),
-                        "Province" => Helper::cleanValue($data_raw->strReceiverProvince),
-                        "City" => Helper::cleanValue($data_raw->strReceiverCity),
-                        "District" => Helper::cleanValue($data_raw->strReceiverDistrict),
-                        "ConsigneeStreetDoorNo" => Helper::cleanValue($data_raw->strReceiverDoorNo),
-                        "ConsigneeMobile" => Helper::cleanValue($data_raw->strReceiverMobile),
-                        "ConsigneeIDNumber" => Helper::cleanValue($data_raw->strReceiverIDNumber),
-                        "ConsigneeIDFrontCopy" => Helper::cleanValue($data_raw->strReceiverIDFrontCopy),
-                        "ConsigneeIDBackCopy" => Helper::cleanValue($data_raw->strReceiverIDBackCopy),
-                        "OrderWeight" => Helper::cleanValue($data_raw->strOrderWeight),
-                        "WeightUnit" => Helper::cleanValue($data_raw->strWeightUnit),
-                        "EndDeliveryType" => Helper::cleanValue($data_raw->strEndDelivertyType),
-                        "InsuranceTypeCode" => Helper::cleanValue($data_raw->strInsuranceTypeCode),
-                        "InsuranceExpense" => Helper::cleanValue($data_raw->numInsuranceExpense),
-                        "TraceSourceNumber" => Helper::cleanValue($data_raw->strTraceNumber),
-                        "Remarks" => Helper::cleanValue($data_raw->strRemarks),
+                        "ShipperOrderNo" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
+                        "ServiceTypeCode" => isset($data_raw->strServiceTypeCode) ? Helper::cleanValue($data_raw->strServiceTypeCode) : "",
+                        "TerminalCode" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "",
+                        "ConsignerName" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
+                        "ConsignerMobile" => isset($data_raw->strSenderMobile) ? Helper::cleanValue($data_raw->strSenderMobile) : "",
+                        "ConsignerProvinceName" => isset($data_raw->strSenderProvinceName) ? Helper::cleanValue($data_raw->strSenderProvinceName) : "",
+                        "ConsignerCityName" => isset($data_raw->strSenderCityName) ? Helper::cleanValue($data_raw->strSenderCityName) : "",
+                        "ConsignerAddress" => isset($data_raw->strSenderAddress) ? Helper::cleanValue($data_raw->strSenderAddress) : "",
+                        "ConsignerPostCode" => isset($data_raw->strSenderPostCode) ? Helper::cleanValue($data_raw->strSenderPostCode) : "",
+                        "ItemDeclareCurrency" => isset($data_raw->strItemCurrency) ? Helper::cleanValue($data_raw->strItemCurrency) : "",
+                        "ConsigneeName" => isset($data_raw->strReceiverName) ? Helper::cleanValue($data_raw->strReceiverName) : "",
+                        "CountryISO2" => isset($data_raw->strCountryISO2) ? Helper::cleanValue($data_raw->strCountryISO2) : "",
+                        "Province" => isset($data_raw->strReceiverProvince) ? Helper::cleanValue($data_raw->strReceiverProvince) : "",
+                        "City" => isset($data_raw->strReceiverCity) ? Helper::cleanValue($data_raw->strReceiverCity) : "",
+                        "District" => isset($data_raw->strReceiverDistrict) ? Helper::cleanValue($data_raw->strReceiverDistrict) : "",
+                        "ConsigneeStreetDoorNo" => isset($data_raw->strReceiverDoorNo) ? Helper::cleanValue($data_raw->strReceiverDoorNo) : "",
+                        "ConsigneeMobile" => isset($data_raw->strReceiverMobile) ? Helper::cleanValue($data_raw->strReceiverMobile) : "",
+                        "ConsigneeIDNumber" => isset($data_raw->strReceiverIDNumber) ? Helper::cleanValue($data_raw->strReceiverIDNumber) : "",
+                        "ConsigneeIDFrontCopy" => isset($data_raw->strReceiverIDFrontCopy) ? Helper::cleanValue($data_raw->strReceiverIDFrontCopy) : "",
+                        "ConsigneeIDBackCopy" => isset($data_raw->strReceiverIDBackCopy) ? Helper::cleanValue($data_raw->strReceiverIDBackCopy) : "",
+                        "OrderWeight" => isset($data_raw->strOrderWeight) ? Helper::cleanValue($data_raw->strOrderWeight) : "",
+                        "WeightUnit" => isset($data_raw->strWeightUnit) ? Helper::cleanValue($data_raw->strWeightUnit) : "",
+                        "EndDeliveryType" => isset($data_raw->strEndDelivertyType) ? Helper::cleanValue($data_raw->strEndDelivertyType) : "",
+                        "InsuranceTypeCode" => isset($data_raw->strInsuranceTypeCode) ? Helper::cleanValue($data_raw->strInsuranceTypeCode) : "",
+                        "InsuranceExpense" => isset($data_raw->numInsuranceExpense) ? Helper::cleanValue($data_raw->numInsuranceExpense) : "",
+                        "TraceSourceNumber" => isset($data_raw->strTraceNumber) ? Helper::cleanValue($data_raw->strTraceNumber) : "",
+                        "Remarks" => isset($data_raw->strRemarks) ? Helper::cleanValue($data_raw->strRemarks) : "",
                         "ITEMS" => $this->getItems(isset($data_raw->items) ? $data_raw->items : [])
                     ]
 
@@ -272,14 +272,14 @@ class PX4 extends Courier
         $list_items = array();
         foreach ($arr_item as $item) {
             $list_item = array(
-                "ItemSKU" => Helper::cleanValue($item->strItemSKU),
-                "ItemDeclareType" => Helper::cleanValue($item->strItemDeclareType),
-                "ItemName" => Helper::cleanValue($item->strItemName),
-                "Specifications" => Helper::cleanValue($item->strItemSpecifications),
-                "ItemQuantity" => Helper::cleanValue($item->numItemQuantity),
-                "ItemBrand" => Helper::cleanValue($item->strItemBrand),
-                "ItemUnitPrice" => Helper::cleanValue($item->numItemUnitPrice),
-                "PreferentialSign" => Helper::cleanValue($item->strIsDiscounted),
+                "ItemSKU" => isset($item->strItemSKU) ? Helper::cleanValue($item->strItemSKU) : "",
+                "ItemDeclareType" => isset($item->strItemDeclareType) ? Helper::cleanValue($item->strItemDeclareType) : "",
+                "ItemName" => isset($item->strItemName) ? Helper::cleanValue($item->strItemName) : "",
+                "Specifications" => isset($item->strItemSpecifications) ? Helper::cleanValue($item->strItemSpecifications) : "",
+                "ItemQuantity" => isset($item->numItemQuantity) ? Helper::cleanValue($item->numItemQuantity) : "",
+                "ItemBrand" => isset($item->strItemBrand) ? Helper::cleanValue($item->strItemBrand) : "",
+                "ItemUnitPrice" => isset($item->numItemUnitPrice) ? Helper::cleanValue($item->numItemUnitPrice) : "",
+                "PreferentialSign" => isset($item->strIsDiscounted) ? Helper::cleanValue($item->strIsDiscounted) : "",
             );
 
             array_push($list_items, $list_item);
@@ -293,9 +293,9 @@ class PX4 extends Courier
         $formated_list = array();
         foreach ($trackingList as $list_item) {
             $new_node = array();
-            $new_node['location'] = Helper::cleanValue($list_item->TrackLocation);
-            $new_node['time'] = Helper::cleanValue($list_item->TrackTime);
-            $new_node['status'] = $this->translateStatus($list_item->TrackStatusCode);
+            $new_node['location'] = isset($list_item->TrackLocation) ? Helper::cleanValue($list_item->TrackLocation) : "";
+            $new_node['time'] = isset($list_item->TrackTime) ? Helper::cleanValue($list_item->TrackTime) : "";
+            $new_node['status'] = isset($list_item->TrackStatusCode) ? $this->translateStatus($list_item->TrackStatusCode) : "";
             array_push($formated_list, $new_node);
         }
         return $formated_list;

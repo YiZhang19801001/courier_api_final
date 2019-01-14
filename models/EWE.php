@@ -197,14 +197,14 @@ class EWE extends Courier
         if (isset($data->items)) {
             foreach ($data->items as $item) {
                 $list_item = array(
-                    "Brand" => Helper::cleanValue($item->strItemBrand),
-                    "ItemName" => Helper::cleanValue($item->strItemName),
-                    "Quantity" => Helper::cleanValue($item->numItemQuantity),
-                    "SKU" => Helper::cleanValue($item->strItemSKU),
+                    "Brand" => isset($item->strItemBrand) ? Helper::cleanValue($item->strItemBrand) : "",
+                    "ItemName" => isset($item->strItemName) ? Helper::cleanValue($item->strItemName) : "",
+                    "Quantity" => isset($item->numItemQuantity) ? Helper::cleanValue($item->numItemQuantity) : "",
+                    "SKU" => isset($item->strItemSKU) ? Helper::cleanValue($item->strItemSKU) : "",
                     "Barcode" => "",
-                    "Charge" => Helper::cleanValue($item->numItemUnitPrice),
+                    "Charge" => isset($item->numItemUnitPrice) ? Helper::cleanValue($item->numItemUnitPrice) : "",
                     "TotalCharge" => isset($item->numTotalPrice) ? Helper::cleanValue($item->numTotalPrice) : "",
-                    "Spec" => Helper::cleanValue($item->strItemSpecifications),
+                    "Spec" => isset($item->strItemSpecifications) ? Helper::cleanValue($item->strItemSpecifications) : "",
                     "Currency" => "",
                 );
 
@@ -227,16 +227,16 @@ class EWE extends Courier
     {
         $sender = array();
 
-        $sender['Name'] = Helper::cleanValue($data->strSenderName);
+        $sender['Name'] = isset($data->strSenderName) ? Helper::cleanValue($data->strSenderName) : "";
         $sender['Email'] = isset($data->strSenderEmail) ? Helper::cleanValue($data->strSenderEmail) : "";
-        $sender['Phone'] = Helper::cleanValue($data->strSenderMobile);
-        $sender['Street'] = Helper::cleanValue($data->strSenderAddress);
-        $sender['City'] = Helper::cleanValue($data->strSenderCityName);
-        $sender['State'] = Helper::cleanValue($data->strSenderProvinceName);
+        $sender['Phone'] = isset($data->strSenderMobile) ? Helper::cleanValue($data->strSenderMobile) : "";
+        $sender['Street'] = isset($data->strSenderAddress) ? Helper::cleanValue($data->strSenderAddress) : "";
+        $sender['City'] = isset($data->strSenderCityName) ? Helper::cleanValue($data->strSenderCityName) : "";
+        $sender['State'] = isset($data->strSenderProvinceName) ? Helper::cleanValue($data->strSenderProvinceName) : "";
         $sender['Suburb'] = "";
         $sender['Country'] = "AUD";
         $sender['Company'] = "";
-        $sender['Postcode'] = Helper::cleanValue($data->strSenderPostCode);
+        $sender['Postcode'] = isset($data->strSenderPostCode) ? Helper::cleanValue($data->strSenderPostCode) : "";
         $sender['SetDefault'] = '';
 
         return $sender;
@@ -247,18 +247,18 @@ class EWE extends Courier
     {
         $receiver = array();
 
-        $receiver['Name'] = Helper::cleanValue($data->strReceiverName);
+        $receiver['Name'] = isset($data->strReceiverName) ? Helper::cleanValue($data->strReceiverName) : "";
         $receiver['Email'] = isset($data->strReceiverEmail) ? Helper::cleanValue($data->strReceiverEmail) : "";
-        $receiver['Phone'] = Helper::cleanValue($data->strReceiverMobile);
-        $receiver['Street'] = Helper::cleanValue($data->strReceiverDoorNo);
-        $receiver['City'] = Helper::cleanValue($data->strReceiverCity);
-        $receiver['State'] = Helper::cleanValue($data->strReceiverProvince);
+        $receiver['Phone'] = isset($data->strReceiverMobile) ? Helper::cleanValue($data->strReceiverMobile) : "";
+        $receiver['Street'] = isset($data->strReceiverDoorNo) ? Helper::cleanValue($data->strReceiverDoorNo) : "";
+        $receiver['City'] = isset($data->strReceiverCity) ? Helper::cleanValue($data->strReceiverCity) : "";
+        $receiver['State'] = isset($data->strReceiverProvince) ? Helper::cleanValue($data->strReceiverProvince) : "";
         $receiver['Suburb'] = isset($data->strReceiverDistrict) ? Helper::cleanValue($data->strReceiverDistrict) : "";
         $receiver['Country'] = "AUD";
         $receiver['Company'] = "";
-        $receiver['Postcode'] = Helper::cleanValue($data->strSenderPostCode);
+        $receiver['Postcode'] = isset($data->strSenderPostCode) ? Helper::cleanValue($data->strSenderPostCode) : "";
         $receiver['AliasName'] = '';
-        $receiver['CardId'] = Helper::cleanValue($data->strReceiverIDNumber);
+        $receiver['CardId'] = isset($data->strReceiverIDNumber) ? Helper::cleanValue($data->strReceiverIDNumber) : "";
 
         return $receiver;
 
@@ -276,8 +276,8 @@ class EWE extends Courier
         $formated_list = array();
         foreach ($trackingList as $list_item) {
             $new_node = array();
-            $new_node['location'] = Helper::cleanValue($list_item->TrackLocation);
-            $new_node['time'] = Helper::cleanValue($list_item->TrackTime);
+            $new_node['location'] = isset($list_item->TrackLocation) ? Helper::cleanValue($list_item->TrackLocation) : "";
+            $new_node['time'] = isset($list_item->TrackTime) ? Helper::cleanValue($list_item->TrackTime) : "";
             $new_node['status'] = $this->translateStatus($list_item->TrackStatusCode);
             array_push($formated_list, $new_node);
         }
