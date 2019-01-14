@@ -25,9 +25,23 @@ class PX4 extends Courier
         }
     }
 
-    public function makeResponseMsg($code)
+    private function makeResponseMsg($code)
     {
 
+        switch ($code) {
+            case 0:
+                return 'SUCCESS';
+            case 1:
+                return 'FAILURE';
+            case 2:
+                return 'DUPLICATE ORDER';
+            case 3:
+                return 'INVALID OPERATION';
+
+            default:
+                # code...
+                return 'FAILURE';
+        }
     }
 
     public function callApi($data_raw)
@@ -85,14 +99,14 @@ class PX4 extends Courier
                 // decode json_string to json_object
                 $decoded_response = json_decode($curl_response);
                 // call model function to refactor the response data which will be used as part of response message to POS
-                $res_arr = $this->makeResponseMsg($decoded_response->ResponseCode);
+                $res_msg = $this->makeResponseMsg(isset($decoded_response->Status) ? $decoded_response->Status : "999");
                 // create reponse array for POS
                 $response_arr = array(
-                    "orderNumber" => isset($decoded_response->Data) ? $decoded_response->Data : "",
-                    "resMsg" => $res_arr['text'] . '  ( ' . $decoded_response->Message . ' )',
-                    "resCode" => $res_arr['code'],
-                    "TaxAmount" => isset($decoded_response->TaxAmount) ? $decoded_response->UnionOrderNumber : "",
-                    "TaxCurrencyCode" => isset($decoded_response->CurrencyCodeTax) ? $decoded_response->CurrencyCodeTax : "",
+                    "orderNumber" => isset($decoded_response->Payload->ORDERNO) ? $decoded_response->Payload->ORDERNO : "",
+                    "resMsg" => $res_msg . '  ( ' . $decoded_response->Message . ' )',
+                    "resCode" => isset($decoded_response->Status) ? $decoded_response->Status : "999",
+                    "TaxAmount" => isset($decoded_response->Total) ? $decoded->Total : "",
+                    "TaxCurrencyCode" => "",
                 );
 
                 return $response_arr;
