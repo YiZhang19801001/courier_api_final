@@ -48,12 +48,13 @@ class EWE extends Courier
     public function callApi($data_raw)
     {
         $response_arr = array();
+
         switch ($this->request_type) {
             case 1:
                 //map values
                 $data_arr = array(
-                    "USERNAME" => $this->username,
-                    "APIPASSWORD" => $this->password,
+                    "USERNAME" => isset($data_raw->strShopCode) ? $data_raw->strShopCode : $this->username,
+                    "APIPASSWORD" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : $this->password,
                     "BoxNo" => isset($data_raw->strBoxNo) ? Helper::cleanValue($data_raw->strBoxNo) : "",
                     "REFERENCENO" => isset($data_raw->strReferenceNo) ? Helper::cleanValue($data_raw->strReferenceNo) : "",
                     "ExtraReferences" => [""],
@@ -65,7 +66,8 @@ class EWE extends Courier
                     "IsUseStock" => isset($data_raw->intIsUseStock) ? Helper::cleanValue($data_raw->intIsUseStock) : "",
                     "ValueAddedService" => isset($data_raw->strValueAddedService) ? Helper::cleanValue($data_raw->strValueAddedService) : "",
                     "Is3PL" => isset($data_raw->strIs3PL) ? Helper::cleanValue($data_raw->strIs3PL) : "N",
-                    "CustomerClientId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "",
+                    // "CustomerClientId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "",
+                    "CustomerClientId" => "",
                     "IsUseCcic" => isset($data_raw->intIsUseCcic) ? Helper::cleanValue($data_raw->intIsUseCcic) : "",
                     "auMerchantId" => isset($data_raw->strAuMerchantId) ? Helper::cleanValue($data_raw->strAuMerchantId) : "",
                     "DeclaredValue" => isset($data_raw->numDeclaredValue) ? Helper::cleanValue($data_raw->numDeclaredValue) : "",

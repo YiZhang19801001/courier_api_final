@@ -104,7 +104,7 @@ class PX4 extends Courier
             case 1:
                 //map values
                 $data_arr = array(
-                    "Token" => $this->getApiKey(),
+                    "Token" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : $this->getApiKey(),
                     "Data" => [
                         "ShipperOrderNo" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
                         "ServiceTypeCode" => isset($data_raw->strServiceTypeCode) ? Helper::cleanValue($data_raw->strServiceTypeCode) : "",

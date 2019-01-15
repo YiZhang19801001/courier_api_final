@@ -118,11 +118,13 @@ class CQCHS extends Courier
         } catch (\Throwable $th) {
             echo 'not good';
         }
+        $userName = isset($data->strShopCode) ? $data->strShopCode : '0104';
+        $password = isset($data->strSecretKey) ? $data->strSecretKey : '123456';
         $receiverAddress = $data->strReceiverProvince . $data->strReceiverProvince . $data->strReceiverDistrict . $data->strReceiverDoorNo;
         $stock = "<ydjbxx>";
-        $stock .= "<chrusername>0104</chrusername>";
+        $stock .= '<chrusername>' . $userName . '</chrusername>';
         $stock .= "<chrstockcode>au</chrstockcode>";
-        $stock .= "<chrpassword>123456</chrpassword>";
+        $stock .= '<chrpassword>' . $password . '</chrpassword>';
 // $stock.="<chryyrmc>2082</chryyrmc>";
         // $stock.="<chrzydhm>160-91239396</chrzydhm>";
         // $stock.="<chrhbh>CX110/CX052</chrhbh>";
