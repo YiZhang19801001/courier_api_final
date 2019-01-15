@@ -48,7 +48,7 @@ switch ($courier_name) {
     case 'CQCHS':
         $courier = new CQCHS($db, 2);
         break;
-    case 'AUEX':
+    case 'AUE':
         $courier = new AUEX($db, 2);
         break;
     case 'EWE':
