@@ -51,7 +51,7 @@ class AUEX extends Courier
                 if ($decoded_response->Code == 0) {
                     $auex_res_msg = $decoded_response->ReturnResult;
                 } else {
-                    $auex_res_msg = $decoded_response->Errors;
+                    $auex_res_msg = $decoded_response->Errors[0]->Message;
                 }
 
                 $response_arr = array(
