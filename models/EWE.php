@@ -95,7 +95,7 @@ class EWE extends Courier
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array("content-type: application/javascript;charset=UTF-8"));
 
                 $curl_response = curl_exec($curl);
-                die('die: ' . $curl_response);
+                // die('die: ' . $curl_response);
 
                 if ($curl_response === false) {
                     $info = curl_getinfo($curl);
