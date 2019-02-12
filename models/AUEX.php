@@ -178,7 +178,7 @@ class AUEX extends Courier
             "ReceiverAddr1" => isset($data_raw->strReceiverDoorNo) ? Helper::cleanValue($data_raw->strReceiverDoorNo) : "",
             "ReceiverEmail" => "",
             "ReceiverCountry" => "",
-            "ReceiverPostCode" => "",
+            "ReceiverPostCode" => "2127",
             "ReceiverPhotoId" => isset($data_raw->strReceiverIDNumber) ? Helper::cleanValue($data_raw->strReceiverIDNumber) : "",
             // "ConsigneeIDFrontCopy" => isset($data_raw->strReceiverIDFrontCopy) ? $Helper->cleanValue($data_raw->strReceiverIDFrontCopy) : null,
             // "ConsigneeIDBackCopy" => isset($data_raw->strReceiverIDBackCopy) ? $Helper->cleanValue($data_raw->strReceiverIDBackCopy) : null,
