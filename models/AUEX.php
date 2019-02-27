@@ -188,7 +188,7 @@ class AUEX extends Courier
             // "InsuranceTypeCode" => isset($data_raw->strInsuranceTypeCode) ? $Helper->cleanValue($data_raw->strInsuranceTypeCode) : "",
             // "InsuranceExpense" => isset($data_raw->numInsuranceExpense) ? $Helper->cleanValue($data_raw->numInsuranceExpense) : null,
             // "TraceSourceNumber" => isset($data_raw->strTraceNumber) ? $Helper->cleanValue($data_raw->strTraceNumber) : null,
-            // "Marks" => isset($data_raw->strRemarks) ? $Helper->cleanValue($data_raw->strRemarks) : "",
+            "Marks" => isset($data_raw->strRemarks) ? $Helper->cleanValue($data_raw->strRemarks) : "",
             "ShipmentContent" => $this->getItems(isset($data_raw->items) ? $data_raw->items : ""),
             "ShipmentCustomContent" => "",
             "Value" => "",
