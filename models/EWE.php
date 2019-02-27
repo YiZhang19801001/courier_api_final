@@ -53,8 +53,8 @@ class EWE extends Courier
             case 1:
                 //map values
                 $data_arr = array(
-                    "USERNAME" => isset($data_raw->strShopCode) ? $data_raw->strShopCode : $this->username,
-                    "APIPASSWORD" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : $this->password,
+                    "USERNAME" => isset($data_raw->strShopCode) ? $data_raw->strShopCode : "",
+                    "APIPASSWORD" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : "",
                     "BoxNo" => isset($data_raw->strBoxNo) ? Helper::cleanValue($data_raw->strBoxNo) : "",
                     "REFERENCENO" => isset($data_raw->strReferenceNo) ? Helper::cleanValue($data_raw->strReferenceNo) : "",
                     "ExtraReferences" => [""],
