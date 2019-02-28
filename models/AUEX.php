@@ -21,7 +21,7 @@ class AUEX extends Courier
         switch ($this->request_type) {
             case 1:
 
-                $AUEXTOKEN = $this->getToken();
+                $AUEXTOKEN = $this->getToken($data_raw);
 // die('token' . $AUEXTOKEN);
                 //** get token end */
 
@@ -67,7 +67,7 @@ class AUEX extends Courier
                 return $response_arr;
 
             case 2:
-                $AUEXTOKEN = $this->getToken();
+                $AUEXTOKEN = $this->getToken($data_raw);
 // die('token' . $AUEXTOKEN);
 
 // die('data_arr:' . json_encode($data_arr));
@@ -127,10 +127,10 @@ class AUEX extends Courier
 
     }
 
-    private function getToken()
+    private function getToken($data_raw)
     {
         //** get token */
-        $token_data_arr = array("MemberId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "", "Password" => isset($data_raw->strSecret) ? Helper::cleanValue($data_raw->strSecret) : "");
+        $token_data_arr = array("MemberId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "", "Password" => isset($data_raw->strSecretKey) ? Helper::cleanValue($data_raw->strSecretKey) : "");
 //call api to get data
         $token_data_string = json_encode($token_data_arr);
 
