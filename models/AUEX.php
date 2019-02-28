@@ -23,6 +23,17 @@ class AUEX extends Courier
 
                 $AUEXTOKEN = $this->getToken($data_raw);
 // die('token' . $AUEXTOKEN);
+                if (!$AUEXTOKEN) {
+                    $response_arr = array(
+                        "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                        "resMsg" => "Login Fail.password or username is not correct.",
+                        "resCode" => "1",
+                        "TaxAmount" => "not availiable for this courier",
+                        "TaxCurrencyCode" => "not availiable for this courier",
+                    );
+
+                    return $response_arr;
+                }
                 //** get token end */
 
                 $data_arr = $this->createRequestArray($data_raw);
@@ -69,6 +80,17 @@ class AUEX extends Courier
             case 2:
                 $AUEXTOKEN = $this->getToken($data_raw);
 // die('token' . $AUEXTOKEN);
+                if (!$AUEXTOKEN) {
+                    $response_arr = array(
+                        "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                        "resMsg" => "Login Fail.password or username is not correct.",
+                        "resCode" => "1",
+                        "TaxAmount" => "not availiable for this courier",
+                        "TaxCurrencyCode" => "not availiable for this courier",
+                    );
+
+                    return $response_arr;
+                }
 
 // die('data_arr:' . json_encode($data_arr));
                 //call api to get data
