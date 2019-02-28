@@ -27,7 +27,7 @@ class AUEX extends Courier
                     $response_arr = array(
                         "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
                         "resMsg" => "Login Fail.password or username is not correct.",
-                        "resCode" => "1",
+                        "resCode" => 1,
                         "TaxAmount" => "not availiable for this courier",
                         "TaxCurrencyCode" => "not availiable for this courier",
                     );
