@@ -6,6 +6,8 @@ class AUEX extends Courier
 {
     //DB stuff
     private $courier_code;
+    private $default_secret = "A09062742";
+    private $agent_code = "2742";
 
     //Constructor with DB
     public function __construct($db, $request_type)
@@ -128,7 +130,7 @@ class AUEX extends Courier
     private function getToken()
     {
         //** get token */
-        $token_data_arr = array("MemberId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : '2742', "Password" => isset($data_raw->strSecret) ? Helper::cleanValue($data_raw->strSecret) : 'A09062742');
+        $token_data_arr = array("MemberId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "", "Password" => isset($data_raw->strSecret) ? Helper::cleanValue($data_raw->strSecret) : "");
 //call api to get data
         $token_data_string = json_encode($token_data_arr);
 
@@ -159,7 +161,7 @@ class AUEX extends Courier
     {
         $request_array = array(
             "OrderId" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
-            "MemberId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : '2742',
+            "MemberId" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "",
             "BrandId" => 1,
             // "TerminalCode" => isset($data_raw->strShopCode) ? $Helper->cleanValue($data_raw->strShopCode) : null,
             "SenderName" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
