@@ -86,7 +86,6 @@ class EWE extends Courier
                 $data_string = json_encode($data_arr);
                 // $data_string = json_encode($data_arr);
                 // build the post string here
-
                 die($data_string);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
