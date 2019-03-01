@@ -18,8 +18,9 @@ class EWE extends Courier
         switch ($this->request_type) {
             case 1:
                 //test api url
-                return "https://newomstest.ewe.com.au/eweApi/ewe/api/createOrder";
-            // return "https://api.ewe.com.au/oms/api/createOrder";
+                // return "https://newomstest.ewe.com.au/eweApi/ewe/api/createOrder";
+                return "https://jerryapi.ewe.com.au/eweApi/ewe/api/createOrder";
+
             case 2:
                 return "https://api.ewe.com.au/oms/api/tracking/ewepost";
             default:
@@ -57,7 +58,7 @@ class EWE extends Courier
                 $data_arr = array(
                     "USERNAME" => isset($data_raw->strShopCode) ? $data_raw->strShopCode : "",
                     "APIPASSWORD" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : "",
-                    "BoxNo" => isset($data_raw->strBoxNo) ? Helper::cleanValue($data_raw->strBoxNo) : "",
+                    "BoxNo" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
                     "REFERENCENO" => isset($data_raw->strReferenceNo) ? Helper::cleanValue($data_raw->strReferenceNo) : "",
                     "ExtraReferences" => [""],
                     "TotalPackage" => 1,
@@ -74,7 +75,7 @@ class EWE extends Courier
                     "auMerchantId" => isset($data_raw->strAuMerchantId) ? Helper::cleanValue($data_raw->strAuMerchantId) : "",
                     "DeclaredValue" => isset($data_raw->numDeclaredValue) ? Helper::cleanValue($data_raw->numDeclaredValue) : "",
                     "RealWeight" => isset($data_raw->numRealWeight) ? Helper::cleanValue($data_raw->numRealWeight) : "",
-                    "OutBizCode" => isset($data_raw->strOutBizCode) ? Helper::cleanValue($data_raw->strOutBizCode) : "",
+                    // "OutBizCode" => isset($data_raw->strOutBizCode) ? Helper::cleanValue($data_raw->strOutBizCode) : "",
                     "Items" => $this->getItems($data_raw),
                     "Sender" => $this->getSender($data_raw),
                     "Receiver" => $this->getReceiver($data_raw),
@@ -86,10 +87,10 @@ class EWE extends Courier
                 $data_string = json_encode($data_arr);
                 // $data_string = json_encode($data_arr);
                 // build the post string here
-                die($data_string);
+                // die($data_string);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
-
+                // die($data_string);
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
@@ -109,14 +110,17 @@ class EWE extends Courier
                 // decode json_string to json_object
                 $decoded_response = json_decode($curl_response);
                 // call model function to refactor the response data which will be used as part of response message to POS
+                // return $decoded_response;
                 $res_msg = $this->makeResponseMsg(isset($decoded_response->Status) ? $decoded_response->Status : "999");
                 // create reponse array for POS
                 $response_arr = array(
-                    "orderNumber" => isset($decoded_response->Payload->ORDERNO) ? $decoded_response->Payload->ORDERNO : "",
+                    "orderNumber" => isset($decoded_response->Payload->BOXNO) ? $decoded_response->Payload->BOXNO : "",
                     "resMsg" => $res_msg . '  ( ' . $decoded_response->Message . ' )',
                     "resCode" => isset($decoded_response->Status) ? $decoded_response->Status : "999",
                     "TaxAmount" => isset($decoded_response->Total) ? $decoded->Total : "",
                     "TaxCurrencyCode" => "",
+                    "printUrl" => isset($decoded_response->Payload->PrintURL) ? $decoded_response->Payload->PrintURL : "",
+                    "EWEOrderNo" => isset($decoded_response->Payload->ORDERNO) ? $decoded_response->Payload->ORDERNO : "",
                 );
 
                 return $response_arr;

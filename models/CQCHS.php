@@ -48,6 +48,8 @@ class CQCHS extends Courier
                         "resCode" => "1",
                         "TaxAmount" => "",
                         "TaxCurrencyCode" => "",
+                        "printUrl" => "",
+                        "EWEOrderNo" => "",
                     );
 
                 }

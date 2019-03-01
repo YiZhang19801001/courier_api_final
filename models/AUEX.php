@@ -73,6 +73,8 @@ class AUEX extends Courier
                     "resCode" => $decoded_response->Code,
                     "TaxAmount" => "not availiable for this courier",
                     "TaxCurrencyCode" => "not availiable for this courier",
+                    "printUrl" => "",
+                    "EWEOrderNo" => "",
                 );
 
                 return $response_arr;

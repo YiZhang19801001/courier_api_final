@@ -169,6 +169,8 @@ class PX4 extends Courier
                     "resCode" => $res_arr['code'],
                     "TaxAmount" => isset($decoded_response->TaxAmount) ? $decoded_response->UnionOrderNumber : "",
                     "TaxCurrencyCode" => isset($decoded_response->CurrencyCodeTax) ? $decoded_response->CurrencyCodeTax : "",
+                    "printUrl" => "",
+                    "EWEOrderNo" => "",
                 );
 
                 return $response_arr;
