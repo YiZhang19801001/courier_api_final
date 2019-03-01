@@ -17,7 +17,9 @@ class EWE extends Courier
     {
         switch ($this->request_type) {
             case 1:
+                //test api url
                 return "https://newomstest.ewe.com.au/eweApi/ewe/api/createOrder";
+            // return "https://api.ewe.com.au/oms/api/createOrder";
             case 2:
                 return "https://api.ewe.com.au/oms/api/tracking/ewepost";
             default:
@@ -85,7 +87,7 @@ class EWE extends Courier
                 // $data_string = json_encode($data_arr);
                 // build the post string here
 
-                // die($data_string);
+                die($data_string);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
 
