@@ -12,6 +12,8 @@ include_once 'models/PX4.php';
 include_once 'models/CQCHS.php';
 include_once 'models/AUEX.php';
 include_once 'models/EWE.php';
+include_once 'models/HUAXIA.php';
+
 include_once 'models/UnknowCourier.php';
 // Turn off all error reporting
 error_reporting(0);
@@ -53,7 +55,9 @@ switch ($courier_name) {
     case 'EWE':
         $courier = new EWE($db, 1);
         break;
-
+    case 'HUAXIA':
+        $courier = new HUAXIA($db, 1);
+        break;
     default:
         $courier = new UnknowCourier();
         break;

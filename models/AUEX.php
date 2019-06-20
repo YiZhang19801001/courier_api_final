@@ -123,7 +123,7 @@ class AUEX extends Courier
                         die('error occured: ' . $decoded->response->errormessage);
                     }
                     $decoded_response = json_decode($curl_response);
-
+                    die(json_encode($decoded_response));
                     $response_arr = array(
                         "orderNumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
                         "resMsg" => isset($decoded_response->ReturnResult) ? $decoded_response->ReturnResult : "",
