@@ -41,7 +41,9 @@ class HUAXIA extends Courier
                     "make" => isset($data_raw->strRemark) ? Helper::cleanValue($data_raw->strRemark) : "",
                     "re_name" => isset($data_raw->strReceiverName) ? Helper::cleanValue($data_raw->strReceiverName) : "",
                     "re_tel" => isset($data_raw->strReceiverMobile) ? Helper::cleanValue($data_raw->strReceiverMobile) : "",
-                    "re_addre" => isset($data_raw->strReceiverDoorNo) ? $data_raw->strReceiverProvince . ' ' . $data_raw->strReceiverCity . ' ' . $data_raw->strReceiverDistrict . ' ' . $data_raw->strReceiverDoorNo : "",
+                    "re_province" => isset($data_raw->strReceiverProvince) ? Helper::cleanValue($data_raw->strReceiverProvince) : "",
+                    "re_city" => isset($data_raw->strReceiverCity) ? Helper::cleanValue($data_raw->strReceiverCity) : "",
+                    "re_addre" => isset($data_raw->strReceiverDoorNo) ? $data_raw->strReceiverDistrict . ' ' . $data_raw->strReceiverDoorNo : "",
                     "re_logistics" => "",
                     "sender_name" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
                     "sender_tel" => isset($data_raw->strSenderMobile) ? Helper::cleanValue($data_raw->strSenderMobile) : "",
@@ -58,7 +60,7 @@ class HUAXIA extends Courier
                 $data_string = json_encode($data_arr);
                 // $data_string = json_encode($data_arr);
                 // build the post string here
-                // die($data_string);
+                die($data_string);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
                 // die($data_string);
