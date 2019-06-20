@@ -18,10 +18,10 @@ class HUAXIA extends Courier
         switch ($this->request_type) {
             case 1:
 
-                return "http: //www.uschuaxia.com/third/customer/placeorder";
+                return "http://www.uschuaxia.com/third/customer/placeorder";
 
             case 2:
-                return "http: //www.uschuaxia.com/third/customer/order/select";
+                return "http://www.uschuaxia.com/third/customer/order/select";
             default:
                 # code...
                 break;
@@ -137,13 +137,13 @@ class HUAXIA extends Courier
                     die('error occured: ' . $decoded->response->errormessage);
                 }
                 // die($curl_response);
-                if ($decoded_response[0]['key'] == 1) {
+                if ($decoded_response[0]->key == 1) {
 
                     $response_arr = array(
                         "orderNumber" => iseet($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
-                        "resMsg" => $this->makeTrackingResponseMsg($decoded_response->Payload),
+                        "resMsg" => $decoded_response[0]->msg,
                         "resCode" => "0",
-                        "TrackingList" => isset($decoded_response->Data->TrackingList) ? $this->getTrackingList($decoded_response->Data->TrackingList) : [],
+                        "TrackingList" => $this->makeTrackingResponseMsg($decoded_response[1]->zOrderNode),
                     );
 
                 } else {
@@ -202,14 +202,14 @@ class HUAXIA extends Courier
     {
         $decoded_response = json_decode($data);
 
-        $key = $decoded_response[0]['key'];
-        $msg = $decoded_response[0]['msg'];
+        $key = $decoded_response[0]->key;
+        $msg = $decoded_response[0]->msg;
         $orderNo = "";
         $company = "";
 
         if ($key == 1) {
-            $orderNo = $decoded_response[1]['orderNo'];
-            $company = $decoded_response[1]['company'];
+            $orderNo = $decoded_response[1]->orderNo;
+            $company = $decoded_response[1]->company;
         }
 
         return array(

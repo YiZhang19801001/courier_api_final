@@ -16,7 +16,7 @@ include_once 'models/HUAXIA.php';
 
 include_once 'models/UnknowCourier.php';
 // Turn off all error reporting
-error_reporting(0);
+// error_reporting(0);
 
 $dateTimeForLogger = Helper::getDateTime();
 
