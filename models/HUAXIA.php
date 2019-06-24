@@ -44,30 +44,28 @@ class HUAXIA extends Courier
                     "re_province" => isset($data_raw->strReceiverProvince) ? Helper::cleanValue($data_raw->strReceiverProvince) : "",
                     "re_city" => isset($data_raw->strReceiverCity) ? Helper::cleanValue($data_raw->strReceiverCity) : "",
                     "re_addre" => isset($data_raw->strReceiverDoorNo) ? $data_raw->strReceiverDistrict . ' ' . $data_raw->strReceiverDoorNo : "",
-                    "re_logistics" => "",
+                    "re_logistics" => '""',
                     "sender_name" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
                     "sender_tel" => isset($data_raw->strSenderMobile) ? Helper::cleanValue($data_raw->strSenderMobile) : "",
                     "sender_addre" => isset($data_raw->strSenderAddress) ? Helper::cleanValue($data_raw->strSenderAddress) : "",
                     "sender_country" => 'Australia',
                     "make" => isset($data_raw->strRemarks) ? Helper::cleanValue($data_raw->strRemarks) : "",
-                    "goods" => null,
+                    "goods" => "",
                     "goodsnew" => $this->getItems(isset($data_raw->items) ? $data_raw->items : [])
-
                 );
 
                 //prepare request body
-                // $data_string = '{' . $this->convertArrayToString($data_arr) . "}";
-                $data_string = json_encode($data_arr);
+                $data_string = $this->makeRequestBody($data_arr);
                 // $data_string = json_encode($data_arr);
                 // build the post string here
-                die($data_string);
+                // die($data_string);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
                 // die($data_string);
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array("content-type: application/javascript;charset=UTF-8"));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array("content-type: application/x-www-form-urlencoded;charset=UTF-8"));
 
                 $curl_response = curl_exec($curl);
                 // die('die: ' . $curl_response);
@@ -100,52 +98,46 @@ class HUAXIA extends Courier
                 $data_arr = array(
                     "tid" => isset($data_raw->strShopCode) ? $data_raw->strShopCode : "",
                     "tkey" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : "",
-                    "orderno" => iseet($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                    "orderno" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
                 );
 
-                $data_string = json_encode($data_arr);
-
+                $data_string = $this->makeRequestBody($data_arr);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
 
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string)));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded', 'Content-Length: ' . strlen($data_string)));
 
                 $curl_response = curl_exec($curl);
-
+                // die($curl_response);
                 if ($curl_response === false) {
                     $info = curl_getinfo($curl);
                     curl_close($curl);
                     return array(
-                        "orderNumber" => $data_raw->strOrderNo,
-                        "resMsg" => json_encode($info),
-                        "resCode" => "1",
-                        "TaxAmount" => "not avaliable for" . $company . '. ',
-                        "TaxCurrencyCode" => "",
-                        "printUrl" => "",
-                        "EWEOrderNo" => "",
+                        "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                        "resMsg" => "api not available",
+                        "resCode" => "Error 404",
                     );
-
-                    die('error occured during curl exec. Additioanl info: ' . var_export($info));
+                    // die('error occured during curl exec. Additioanl info: ' . var_export($info));
                 }
 
                 curl_close($curl);
 
                 $decoded_response = json_decode($curl_response);
-
+                // die('abc');
                 if (isset($decoded->response->status) && $decoded->response->status == 'ERROR') {
                     die('error occured: ' . $decoded->response->errormessage);
                 }
-                // die($curl_response);
                 if ($decoded_response[0]->key == 1) {
+                    // var_dump($decoded_response);
 
                     $response_arr = array(
-                        "orderNumber" => iseet($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
+                        "orderNumber" => isset($data_raw->strOrderNo) ? $data_raw->strOrderNo : "",
                         "resMsg" => $decoded_response[0]->msg,
                         "resCode" => "0",
-                        "TrackingList" => $this->makeTrackingResponseMsg($decoded_response[1]->zOrderNode),
+                        "TrackingList" => $this->makeTrackingResponseMsg($decoded_response[1][0]->zOrderNode),
                     );
 
                 } else {
@@ -200,6 +192,21 @@ class HUAXIA extends Courier
 
     }
 
+    private function makeRequestBody($data)
+    {
+        $resultString = "";
+        foreach ($data as $key => $value) {
+            if ($resultString == "") {
+                $resultString .= $key . '=' . $value;
+
+            } else {
+                $resultString .= '&' . $key . '=' . $value;
+            }
+        }
+
+        return $resultString;
+    }
+
     private function createResponseBody($data)
     {
         $decoded_response = json_decode($data);
@@ -247,8 +254,10 @@ class HUAXIA extends Courier
         $msg = "";
         $index = 1;
         foreach ($array as $value) {
-            $msg = $index . ". 订单状态: " . $value['node_name'] . "日期时间: " . $array['node_time'] . ";";
+            $msg = $index . ". 订单状态: " . $value->node_name . "日期时间: " . $value->node_time . ";";
         }
+
+        return $msg;
     }
 
 }
