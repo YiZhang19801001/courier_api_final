@@ -211,7 +211,6 @@ class HUAXIA extends Courier
     private function createResponseBody($data)
     {
 
-        die($data);
         $decoded_response = json_decode($data);
 
         $key = $decoded_response[0]->key;
