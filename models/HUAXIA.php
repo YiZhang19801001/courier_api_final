@@ -38,27 +38,27 @@ class HUAXIA extends Courier
                 $data_arr = array(
                     "tid" => isset($data_raw->strShopCode) ? $data_raw->strShopCode : "",
                     "tkey" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : "",
-                    "make" => isset($data_raw->strRemark) ? Helper::cleanValue($data_raw->strRemark) : "",
+                    // "make" => isset($data_raw->strRemark) ? Helper::cleanValue($data_raw->strRemark) : "",
                     "re_name" => isset($data_raw->strReceiverName) ? Helper::cleanValue($data_raw->strReceiverName) : "",
                     "re_tel" => isset($data_raw->strReceiverMobile) ? Helper::cleanValue($data_raw->strReceiverMobile) : "",
                     "re_province" => isset($data_raw->strReceiverProvince) ? Helper::cleanValue($data_raw->strReceiverProvince) : "",
                     "re_city" => isset($data_raw->strReceiverCity) ? Helper::cleanValue($data_raw->strReceiverCity) : "",
                     "re_addre" => isset($data_raw->strReceiverDoorNo) ? $data_raw->strReceiverDistrict . ' ' . $data_raw->strReceiverDoorNo : "",
-                    "re_logistics" => '""',
+                    "re_logistics" => '顺丰专线路线',
                     "sender_name" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
                     "sender_tel" => isset($data_raw->strSenderMobile) ? Helper::cleanValue($data_raw->strSenderMobile) : "",
                     "sender_addre" => isset($data_raw->strSenderAddress) ? Helper::cleanValue($data_raw->strSenderAddress) : "",
                     "sender_country" => 'Australia',
                     "make" => isset($data_raw->strRemarks) ? Helper::cleanValue($data_raw->strRemarks) : "",
-                    "goods" => "",
-                    "goodsnew" => $this->getItems(isset($data_raw->items) ? $data_raw->items : [])
+                    "goods" => null,
+                    "goodsnew" => $this->getItems(isset($data_raw->items) ? $data_raw->items : []),
+                    "order_no" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : ""
                 );
 
                 //prepare request body
                 $data_string = $this->makeRequestBody($data_arr);
                 // $data_string = json_encode($data_arr);
                 // build the post string here
-                // die($data_string);
                 $url = $this->getUrl();
                 $curl = curl_init($url);
                 // die($data_string);
@@ -194,6 +194,7 @@ class HUAXIA extends Courier
 
     private function makeRequestBody($data)
     {
+        // var_dump($data);
         $resultString = "";
         foreach ($data as $key => $value) {
             if ($resultString == "") {
@@ -209,6 +210,8 @@ class HUAXIA extends Courier
 
     private function createResponseBody($data)
     {
+
+        die($data);
         $decoded_response = json_decode($data);
 
         $key = $decoded_response[0]->key;
