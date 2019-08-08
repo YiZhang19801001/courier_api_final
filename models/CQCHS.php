@@ -20,7 +20,7 @@ class CQCHS extends Courier
             case 1:
                 $stock = $this->createStockString($data_raw);
 
-                $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/au/recordservice?wsdl";
+                $wsdl = "http://www.zhonghuan.com.au:8086/API/cxf/au/recordservice?wsdl";
                 $client = new SoapClient($wsdl, array('trace' => 1));
 
                 $request_param = array(
@@ -56,7 +56,7 @@ class CQCHS extends Courier
                 return $response_arr;
 
             case 2:
-                $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/common/logisticsservice?wsdl";
+                $wsdl = "http://www.zhonghuan.com.au:8086/API/cxf/common/logisticsservice?wsdl";
                 $client = new SoapClient($wsdl, array('trace' => 1)); // The trace param will show you errors stack
 
                 $request_param = array(
@@ -114,7 +114,7 @@ class CQCHS extends Courier
 
     private function createStockString($data)
     {
-        $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/au/recordservice?wsdl";
+        $wsdl = "http://www.zhonghuan.com.au:8086/API/cxf/au/recordservice?wsdl";
         try {
             $client = new SoapClient($wsdl, array('trace' => 1));
         } catch (\Throwable $th) {
