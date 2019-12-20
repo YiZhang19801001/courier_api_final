@@ -10,6 +10,7 @@ class CQCHS extends Courier
     //Constructor with DB
     public function __construct($db, $request_type)
     {
+        // $request_type [1=>createorder 2=>trackorder]
         parent::__construct($db, $request_type);
     }
 
@@ -18,22 +19,26 @@ class CQCHS extends Courier
         $response_arr = array();
         switch ($this->request_type) {
             case 1:
-                $stock = $this->createStockString($data_raw);
-
-                $wsdl = "http://www.zhonghuan.com.au:8086/API/cxf/au/recordservice?wsdl";
-                $client = new SoapClient($wsdl, array('trace' => 1));
-
-                $request_param = array(
-                    "stock" => $stock,
-                );
+                // create web stock request
 
                 try
                 {
+                    $stock = $this->createStockString($data_raw);
+                    $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/au/recordservice?wsdl";
+
+                    $client = new SoapClient($wsdl, array('trace' => 1));
+                    $request_param = array(
+                        "stock" => $stock,
+                    );
+
+                    // call external api
                     $response_string = json_encode($client->getRecord($request_param));
+                    // decode response data
                     $response_json = json_decode($response_string);
 
                     //$responce_param =  $client->call("webservice_methode_name", $request_param); // Alternative way to call soap method
 
+                    // generate response message for POS
                     $response_arr = array(
                         "orderNumber" => $response_json->return->chrfydh,
                         "resMsg" => $response_json->return->backmsg,
@@ -53,6 +58,7 @@ class CQCHS extends Courier
                     );
 
                 }
+                // return result to
                 return $response_arr;
 
             case 2:
@@ -114,12 +120,12 @@ class CQCHS extends Courier
 
     private function createStockString($data)
     {
-        $wsdl = "http://www.zhonghuan.com.au:8086/API/cxf/au/recordservice?wsdl";
-        try {
-            $client = new SoapClient($wsdl, array('trace' => 1));
-        } catch (\Throwable $th) {
-            echo 'not good';
-        }
+        $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/au/recordservice?wsdl";
+        // try {
+        //     $client = new SoapClient($wsdl, array('trace' => 1));
+        // } catch (\Throwable $th) {
+        //     echo 'not good' . $th;
+        // }
         $userName = isset($data->strShopCode) ? $data->strShopCode : '0104';
         $password = isset($data->strSecretKey) ? $data->strSecretKey : '123456';
         $receiverAddress = $data->strReceiverProvince . $data->strReceiverProvince . $data->strReceiverDistrict . $data->strReceiverDoorNo;
