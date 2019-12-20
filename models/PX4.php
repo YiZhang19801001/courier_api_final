@@ -107,7 +107,7 @@ class PX4 extends Courier
                     "Token" => isset($data_raw->strSecretKey) ? $data_raw->strSecretKey : $this->getApiKey(),
                     "Data" => [
                         "ShipperOrderNo" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
-                        "ServiceTypeCode" => isset($data_raw->strServiceTypeCode) ? Helper::cleanValue($data_raw->strServiceTypeCode) : "",
+                        "ServiceTypeCode" => "EC",
                         "TerminalCode" => isset($data_raw->strShopCode) ? Helper::cleanValue($data_raw->strShopCode) : "",
                         "ConsignerName" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
                         "ConsignerMobile" => isset($data_raw->strSenderMobile) ? Helper::cleanValue($data_raw->strSenderMobile) : "",
