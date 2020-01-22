@@ -200,7 +200,7 @@ class WISE extends Courier
         $request_array = array(
             "waybillnumber" => isset($data_raw->strOrderNo) ? Helper::cleanValue($data_raw->strOrderNo) : "",
             "waybilltype" => 3,
-            "expressline" => "杂货小包-周达EXP@STO申通悉尼",
+            "expressline" => "年货迷你包专线@STO申通悉尼",
             "hairname" => isset($data_raw->strSenderName) ? Helper::cleanValue($data_raw->strSenderName) : "",
             "hairphone" => isset($data_raw->strSenderMobile) ? Helper::cleanValue($data_raw->strSenderMobile) : "",
             "hairadddress" => $this->getSenderAddress($data_raw),
