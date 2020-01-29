@@ -19,7 +19,7 @@ class EWE extends Courier
             case 1:
                 //test api url
                 // return "https://newomstest.ewe.com.au/eweApi/ewe/api/createOrder";
-            return "https://jerryapi.ewe.com.au/eweApi/ewe/api/createOrder";
+                return "https://jerryapi.ewe.com.au/eweApi/ewe/api/createOrder";
 
             case 2:
                 return "https://api.ewe.com.au/oms/api/tracking/ewepost";
