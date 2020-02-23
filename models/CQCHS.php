@@ -62,7 +62,7 @@ class CQCHS extends Courier
                 return $response_arr;
 
             case 2:
-                $wsdl = "http://www.zhonghuan.com.au:8086/API/cxf/common/logisticsservice?wsdl";
+                $wsdl = "http://www.zhonghuan.com.au:8085/API/cxf/common/logisticsservice?wsdl";
                 $client = new SoapClient($wsdl, array('trace' => 1)); // The trace param will show you errors stack
 
                 $request_param = array(
