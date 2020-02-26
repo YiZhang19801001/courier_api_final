@@ -40,23 +40,22 @@ class WISE extends Courier
                 // die('data_arr:' . json_encode($data_arr));
                 //call api to get data
                 $data_string = json_encode($data_arr);
-
-// die('data_string: ' . $data_string);
+                // die('data_string: ' . $data_string);
                 $url = 'https://api.wise-borders.com/waybill/add';
                 $curl = curl_init($url);
 
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: ' . $WISETOKEN, 'Content-Length: ' . strlen($data_string)));
                 $curl_response = curl_exec($curl);
-                if (!$curl_response) {
-                    var_dump(curl_getinfo($curl));
+
+                if ($curl_response === false) {
+
                     curl_close($curl);
                     die("访问API失败");
                 }
-
 // die('response:' . $curl_response);
                 $decoded_response = json_decode($curl_response);
 
@@ -182,7 +181,9 @@ class WISE extends Courier
         curl_setopt($token_curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($token_curl, CURLOPT_POSTFIELDS, $token_data_string);
         curl_setopt($token_curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($token_data_string)));
+
         $token_curl_response = curl_exec($token_curl);
+
         if ($token_curl_response === false) {
             $token_info = curl_getinfo($token_curl);
             curl_close($token_curl);
