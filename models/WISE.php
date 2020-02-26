@@ -34,6 +34,7 @@ class WISE extends Courier
 
                     return $response_arr;
                 }
+
                 //** get token end */
                 $data_arr = $this->createRequestArray($data_raw);
                 // die('data_arr:' . json_encode($data_arr));
@@ -44,15 +45,19 @@ class WISE extends Courier
                 $url = 'https://api.wise-borders.com/waybill/add';
                 $curl = curl_init($url);
 
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
                 curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string), 'Authorization: ' . $WISETOKEN));
-
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: ' . $WISETOKEN, 'Content-Length: ' . strlen($data_string)));
                 $curl_response = curl_exec($curl);
+                if (!$curl_response) {
+                    var_dump(curl_getinfo($curl));
+                    curl_close($curl);
+                    die("访问API失败");
+                }
 
 // die('response:' . $curl_response);
-
                 $decoded_response = json_decode($curl_response);
 
                 if (isset($decoded->response->errcode) && $decoded->response->errcode != '1000001') {
@@ -104,6 +109,7 @@ class WISE extends Courier
                 $data_string = '{"tracknumber":"' . $WiseOderId . '"}';
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_string), 'Authorization: ' . $WISETOKEN));
 
@@ -173,18 +179,19 @@ class WISE extends Courier
 
         curl_setopt($token_curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($token_curl, CURLOPT_POST, true);
+        curl_setopt($token_curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($token_curl, CURLOPT_POSTFIELDS, $token_data_string);
         curl_setopt($token_curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($token_data_string)));
-
         $token_curl_response = curl_exec($token_curl);
-
         if ($token_curl_response === false) {
             $token_info = curl_getinfo($token_curl);
             curl_close($token_curl);
+
             die('error occured during curl exec. Additioanl info: ' . var_export($token_info));
         }
 
         curl_close($token_curl);
+
         $token_decoded_response = json_decode($token_curl_response);
         if ($token_decoded_response->errcode === "1000001") {
 
