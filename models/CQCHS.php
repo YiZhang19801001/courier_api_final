@@ -47,6 +47,7 @@ class CQCHS extends Courier
                         "TaxCurrencyCode" => "",
                     );
                 } catch (Exception $e) {
+                    // var_dump($e);
                     $response_arr = array(
                         "orderNumber" => "",
                         "resMsg" => $e->getMessage(),
@@ -129,6 +130,7 @@ class CQCHS extends Courier
         $userName = isset($data->strShopCode) ? $data->strShopCode : '0104';
         $password = isset($data->strSecretKey) ? $data->strSecretKey : '123456';
         $receiverAddress = $data->strReceiverProvince . $data->strReceiverProvince . $data->strReceiverDistrict . $data->strReceiverDoorNo;
+        $entryType = (isset($data->strEndDelivertyType) && $data->strEndDelivertyType != "") ? $data->strEndDelivertyType : '4';
         $stock = "<ydjbxx>";
         $stock .= '<chrusername>' . $userName . '</chrusername>';
         $stock .= "<chrstockcode>au</chrstockcode>";
@@ -136,7 +138,7 @@ class CQCHS extends Courier
 // $stock.="<chryyrmc>2082</chryyrmc>";
         // $stock.="<chrzydhm>160-91239396</chrzydhm>";
         // $stock.="<chrhbh>CX110/CX052</chrhbh>";
-        // $stock.="<chrjckrq>2015-06-25</chrjckrq>";
+        $stock .= "<entryType>$entryType</entryType>";
         $stock .= "<chrzl>$data->strOrderWeight</chrzl>";
         $stock .= "<chrsjr>$data->strReceiverName</chrsjr>";
         $stock .= "<chrsjrdz>$receiverAddress</chrsjrdz>";
