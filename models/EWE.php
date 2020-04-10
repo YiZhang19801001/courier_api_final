@@ -65,7 +65,7 @@ class EWE extends Courier
                     "Remark" => isset($data_raw->strRemark) ? Helper::cleanValue($data_raw->strRemark) : "",
                     "DeclaredWeight" => isset($data_raw->strOrderWeight) ? Helper::cleanValue($data_raw->strOrderWeight) : "",
                     "IsEconomic" => isset($data_raw->boolIsEconomic) ? Helper::cleanValue($data_raw->boolIsEconomic) : "",
-                    "ContentType" => isset($data_raw->intContentType) ? Helper::cleanValue($data_raw->intContentType) : "",
+                    "ContentType" => isset($data_raw->strServiceTypeCode) ? Helper::cleanValue($data_raw->strServiceTypeCode) : "",
                     "IsUseStock" => isset($data_raw->intIsUseStock) ? Helper::cleanValue($data_raw->intIsUseStock) : "",
                     "ValueAddedService" => isset($data_raw->strValueAddedService) ? Helper::cleanValue($data_raw->strValueAddedService) : "",
                     "Is3PL" => isset($data_raw->strIs3PL) ? Helper::cleanValue($data_raw->strIs3PL) : "N",
