@@ -3,9 +3,9 @@ class Database
 {
     //DB Params
     private $host = 'localhost';
-    private $db_name = 'ozwearug_apiconnection';
-    private $username = 'ozwearug_order';
-    private $password = '122333order';
+    private $db_name = 'dev_apiconnection';
+    private $username = 'root';
+    private $password = '';
     private $conn;
 
     //DB Connect
